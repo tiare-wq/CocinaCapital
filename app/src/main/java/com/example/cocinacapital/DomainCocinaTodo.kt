@@ -1,5 +1,9 @@
 package org.example
 
+// ======================================
+// PRODUCTOS
+// ======================================
+
 enum class TipoEntrada {
     ENSALADA,
     SOPA,
@@ -150,3 +154,11 @@ open class ExperienciaCulinaria(
         precio = precioInicial
     }
 }
+
+// ======================================
+// PERFILES
+// ======================================
+
+class Cliente(
+    var nombre: String
+)

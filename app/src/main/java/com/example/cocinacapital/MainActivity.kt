@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.cocinacapital.ui.screen.HomeScreen
 import com.example.cocinacapital.ui.theme.CocinaCapitalTheme
+import org.example.Cliente
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,7 +22,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             CocinaCapitalTheme {
                 Surface() {
-                    HomeScreen({})
+                    HomeScreen({}, Cliente("Jorge"))
                 }
             }
         }
