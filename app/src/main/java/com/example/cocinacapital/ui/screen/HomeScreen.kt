@@ -28,7 +28,7 @@ import org.example.Cliente
 
 @Composable
 fun HomeScreen(
-    productScreen: () -> Unit,
+    onBackClick: () -> Unit,
     cliente: Cliente
 ) {
     Column(
