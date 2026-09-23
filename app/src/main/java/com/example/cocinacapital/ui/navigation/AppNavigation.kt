@@ -1,7 +1,10 @@
 package com.example.cocinacapital.ui.navigation
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
@@ -9,6 +12,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -27,20 +34,30 @@ fun AppNavigation() {
     Scaffold(
         bottomBar = {
             NavigationBar(
-
+                modifier = Modifier.background(color = MaterialTheme.colorScheme.surface)
             ) {
                 items.forEachIndexed { index, item ->
                     NavigationBarItem(
                         icon = {
                             Icon(
-                                if (currentRoute == item.ruta) items[item.]
-                                else unselectedIcons[index]
+                                painter = painterResource(
+                                    if (currentRoute == item.ruta) item.iconSelected
+                                    else item.iconUnselected),
+                                contentDescription =
+                                if (currentRoute == item.ruta) "${item.nombre} seleccionado"
+                                else "${item.nombre} no seleccionado",
+                                tint = Color.Unspecified,
+                                modifier = Modifier.widthIn(max = 40.dp)
                             )
                         },
-                        label = { Text(item.nombre) },
-                        selected = currentRoute == item.ruta,
-                        onClick = {currentRoute = item.ruta}
 
+                        label = { Text(
+                            text = item.nombre,
+                            color = if (currentRoute == item.ruta) MaterialTheme.colorScheme.secondary else Color.Gray,
+                            fontSize = 16.sp
+                        ) },
+                        selected = currentRoute == item.ruta,
+                        onClick = { navController.navigate(item.ruta) }
                     )
                 }
             }
@@ -57,14 +74,14 @@ fun AppNavigation() {
             composable(route = Routes.HOME.ruta) {
                 HomeScreen(
                     onBackClick =
-                        { navController.navigate(Routes.HOME) },
+                        { navController.navigate(Routes.HOME.ruta) },
                     Cliente("Jorge")
                 )
             }
 
             composable(route = Routes.BUSQUEDA.ruta) {
                 BusquedaScreen(onBusquedaClick = {
-                    navController.navigate(Routes.BUSQUEDA)
+                    navController.navigate(Routes.BUSQUEDA.ruta)
                 })
             }
         }

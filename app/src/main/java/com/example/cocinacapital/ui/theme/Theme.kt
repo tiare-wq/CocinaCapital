@@ -22,7 +22,7 @@ private val LightColorScheme = lightColorScheme(
     secondary = Tomato,
     tertiary = DarkGreen,
     background = Snow,
-    surface = Snow,
+    surface = Light,
 
 
     /* Other default colors to override

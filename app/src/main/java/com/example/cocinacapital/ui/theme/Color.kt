@@ -12,5 +12,7 @@ val Pink40 = Color(0xFF7D5260)
 
 val Snow = Color(241, 232, 217)
 
+val Light = Color(244, 244, 244)
+
 val Tomato = Color(232, 84, 63)
 val DarkGreen = Color(11, 61, 46)

@@ -10,27 +10,32 @@ import com.example.cocinacapital.R
 enum class Routes(
     val ruta: String,
     val nombre: String,
-    val iconSelected: Image,
-    val iconUnselected: Image) {
+    val iconSelected: Int,
+    val iconUnselected: Int) {
     HOME(
         "home",
         "Inicio",
-        Image(
-            painter = painterResource(id = R.drawable.homeSelected),
-            contentDescription = "Inicio seleccionado",
-            modifier = Modifier.fillMaxWidth(48.dp)
-        ),
-        Image(
-
-        )
+        R.drawable.home_selected,
+        R.drawable.home_unselected
     ),
+
     BUSQUEDA(
         "busqueda",
-        "Explorar"),
+        "Explorar",
+        R.drawable.explorar_selected,
+        R.drawable.explorar_unselected
+    ),
     MAPA(
         "mapa",
-        "Map"),
+        "Map",
+    R.drawable.mapa_selected,
+        R.drawable.mapa_unselected
+    ),
+
     PERFIL(
         "perfil",
-        "Perfil")
+        "Perfil",
+        R.drawable.perfil_selected,
+        R.drawable.perfil_unselected
+    )
 }
