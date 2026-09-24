@@ -16,12 +16,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.cocinacapital.ui.screen.BusquedaScreen
+import com.example.cocinacapital.ui.screen.FavoritosScreen
 import com.example.cocinacapital.ui.screen.HomeScreen
+import com.example.cocinacapital.ui.screen.MapasScreen
+import com.example.cocinacapital.ui.screen.PerfilScreen
 import org.example.Cliente
 
 @Composable
@@ -29,7 +33,7 @@ fun AppNavigation() {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     var currentRoute = navBackStackEntry?.destination?.route
-    val items = listOf<Routes>(Routes.HOME, Routes.BUSQUEDA, Routes.MAPA, Routes.PERFIL)
+    val items = listOf<Routes>(Routes.HOME, Routes.BUSQUEDA, Routes.MAPA, Routes.FAVORITOS, Routes.PERFIL)
 
     Scaffold(
         bottomBar = {
@@ -82,6 +86,24 @@ fun AppNavigation() {
             composable(route = Routes.BUSQUEDA.ruta) {
                 BusquedaScreen(onBusquedaClick = {
                     navController.navigate(Routes.BUSQUEDA.ruta)
+                })
+            }
+
+            composable(route = Routes.MAPA.ruta) {
+                MapasScreen( onMapasClick =  {
+                    navController.navigate(Routes.MAPA.ruta)
+                })
+            }
+
+            composable(route = Routes.FAVORITOS.ruta) {
+                FavoritosScreen( onFavoritosClick = {
+                    navController.navigate(Routes.FAVORITOS.ruta)
+                })
+            }
+
+            composable(route = Routes.PERFIL.ruta) {
+                PerfilScreen( onPerfilClick = {
+                    navController.navigate(Routes.PERFIL.ruta)
                 })
             }
         }

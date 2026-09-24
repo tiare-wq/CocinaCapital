@@ -14,5 +14,5 @@ val Snow = Color(241, 232, 217)
 
 val Light = Color(244, 244, 244)
 
-val Tomato = Color(232, 84, 63)
+val Blue = Color(62, 143, 214)
 val DarkGreen = Color(11, 61, 46)

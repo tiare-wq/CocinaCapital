@@ -32,6 +32,13 @@ enum class Routes(
         R.drawable.mapa_unselected
     ),
 
+    FAVORITOS(
+        "favoritos",
+        "Favoritos",
+        R.drawable.favoritos_selected,
+        R.drawable.favoritos_unselected
+    ),
+
     PERFIL(
         "perfil",
         "Perfil",
