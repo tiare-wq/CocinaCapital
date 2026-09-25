@@ -57,7 +57,7 @@ fun AppNavigation() {
 
                         label = { Text(
                             text = item.nombre,
-                            color = if (currentRoute == item.ruta) MaterialTheme.colorScheme.secondary else Color.Gray,
+                            color = if (currentRoute == item.ruta) MaterialTheme.colorScheme.primary else Color.Gray,
                             fontSize = 16.sp
                         ) },
                         selected = currentRoute == item.ruta,
