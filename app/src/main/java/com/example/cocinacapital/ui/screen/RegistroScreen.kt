@@ -42,8 +42,6 @@ fun RegistroScreen(
     var showPassword by rememberSaveable() { mutableStateOf(false) }
     var registrarse by rememberSaveable() { mutableStateOf("") }
 
-    var inputMail = findViewById<TextInputLayout>(R.id.mail)
-
     Column(
         modifier = Modifier
             .background(color = MaterialTheme.colorScheme.background)
