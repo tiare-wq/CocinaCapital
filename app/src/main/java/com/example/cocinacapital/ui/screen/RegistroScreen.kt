@@ -34,7 +34,8 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun RegistroScreen(
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    onPreguntasClick: () -> Unit
 ) {
     var mail by rememberSaveable() { mutableStateOf("") }
     var username by rememberSaveable() { mutableStateOf("") }
