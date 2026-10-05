@@ -1,5 +1,9 @@
 package com.example.cocinacapital.ui.screen
 
+/* TO DO
+* 1. PERMITIR CAMBIAR DE OPCION AL HABER SELECCIONADO AL MENOS (2, 3 OPCIONES)
+* */
+
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -21,7 +25,6 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SegmentedButton
-import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.Composable
