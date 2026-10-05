@@ -16,7 +16,7 @@ fun LogginNavigation() {
 
     NavHost(
         navController = navController,
-        startDestination = LogginRoutes.PREGUNTAS
+        startDestination = LogginRoutes.INICIO_SESION
     ) {
         composable (LogginRoutes.INICIO_SESION) {
             LogginScreen(
