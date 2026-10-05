@@ -12,12 +12,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.cocinacapital.data.repository.PreguntasRepository
 import com.example.cocinacapital.ui.navigation.AppNavigation
 import com.example.cocinacapital.ui.navigation.LogginNavigation
 import com.example.cocinacapital.ui.screen.HomeScreen
 import com.example.cocinacapital.ui.screen.LogginScreen
-import com.example.cocinacapital.ui.screen.PreguntasScreen
 import com.example.cocinacapital.ui.theme.CocinaCapitalTheme
 import org.example.Cliente
 
@@ -27,8 +25,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             CocinaCapitalTheme {
                 Surface() {
-                    val preguntas = PreguntasRepository()
-                    PreguntasScreen(preguntas.obtenerPreguntas())
+                    AppNavigation()
                 }
             }
         }
