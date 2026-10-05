@@ -41,7 +41,8 @@ import com.example.cocinacapital.data.model.Pregunta
 
 @Composable
 fun PreguntasScreen(
-    preguntas: List<Pregunta>
+    preguntas: List<Pregunta>,
+    onLocationClick: () -> Unit
 ) {
 
     var indiceActual by remember {
@@ -159,11 +160,20 @@ fun PreguntasScreen(
                     Text("Anterior")
                 }
 
-                Button(
-                    onClick = { indiceActual++ },
-                    enabled = indiceActual < preguntas.lastIndex
-                ) {
-                    Text("Siguiente")
+                if ( indiceActual != preguntas.lastIndex ) {
+                    Button(
+                        onClick = { indiceActual++ },
+                        enabled = indiceActual < preguntas.lastIndex
+                    ) {
+                        Text("Siguiente")
+                    }
+                } else {
+                    Button (
+                        onClick = onLocationClick,
+                        enabled = true
+                    ) {
+                        Text("Guardar y continuar")
+                    }
                 }
             }
         }
