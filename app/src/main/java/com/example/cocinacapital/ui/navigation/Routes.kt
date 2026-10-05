@@ -1,10 +1,5 @@
 package com.example.cocinacapital.ui.navigation
 
-import android.media.Image
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
 import com.example.cocinacapital.R
 
 enum class Routes(
