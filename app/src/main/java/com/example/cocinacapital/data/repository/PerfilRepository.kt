@@ -1,24 +1,22 @@
 package com.example.cocinacapital.data.repository
 
-import com.example.cocinacapital.data.model.Perfil
+import com.example.cocinacapital.data.model.User
 
 class PerfilRepository {
-    private val perfiles = listOf<Perfil>(
-        Perfil("tiar.salazar@duocuc.cl", "Pollitos27."),
-        Perfil("miguelangel@gmail.com", "Monalisa76."),
-        Perfil("leonardo_dicaprio@outlook.com", "Titanic2001."),
-        Perfil("blackpink77@duocuc.cl", "BOMBA4YAH."),
-        Perfil("francoise_sayan@outlook.com", "Frasesbonitas.")
+    private val usuarios = listOf<User>(
+        User("tiar.salazar@duocuc.cl", "Lola", "Pollitos27."),
+        User("miguelangel@gmail.com", "Miguelito", "Monalisa76."),
+        User("leonardo_dicaprio@outlook.com", "Lobo Wallstreet", "Titanic2001.")
     )
 
-    fun getUsuarioByMail(mail: String): Perfil? {
-        return perfiles.filter{ it.mail == mail }
+    fun getUsuarioByMail(mail: String): User? {
+        return usuarios.filter{ it.email == mail }
             .firstOrNull()
     }
 
     fun validarPassword(mail: String, password: String): Boolean {
-        val perfil: Perfil? = getUsuarioByMail(mail)
+        val user: User? = getUsuarioByMail(mail)
 
-        return perfil?.password == password
+        return user?.password == password
     }
 }

@@ -46,7 +46,7 @@ open class Producto(
     val id: Int,
     val nombre: String,
     val descr: String,
-    val restaruante: Restaurante,
+    val restaruante: Restaurante?,
     val stock: Int,
     precioInicial: Double
 ) {
@@ -78,7 +78,7 @@ open class Entrada(
     id: Int,
     nombre: String,
     descr: String,
-    restaruante: Restaurante,
+    restaruante: Restaurante?,
     stock: Int,
     precio: Double,
     val tipoEntrada: TipoEntrada
@@ -94,7 +94,7 @@ open class PlatoPrincipal(
     id: Int,
     nombre: String,
     descr: String,
-    restaruante: Restaurante,
+    restaruante: Restaurante?,
     stock: Int,
     precio: Double,
     val tipoPlatoPrincipal: TipoPlatoPrincipal
@@ -110,7 +110,7 @@ open class Guarnicion (
     id: Int,
     nombre: String,
     descr: String,
-    restaruante: Restaurante,
+    restaruante: Restaurante?,
     stock: Int,
     precio: Double,
     val tipoGuarnicion: TipoGuarnicion
@@ -126,7 +126,7 @@ open class Postre (
     id: Int,
     nombre: String,
     descr: String,
-    restaruante: Restaurante,
+    restaruante: Restaurante?,
     stock: Int,
     precio: Double,
     val tipoPostre: TipoPostre
@@ -142,7 +142,7 @@ open class Bebida (
     id: Int,
     nombre: String,
     descr: String,
-    restaruante: Restaurante,
+    restaruante: Restaurante?,
     stock: Int,
     precio: Double,
     val tipoBebida: TipoBebida

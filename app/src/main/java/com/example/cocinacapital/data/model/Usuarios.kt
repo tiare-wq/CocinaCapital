@@ -1,5 +1,6 @@
 package com.example.cocinacapital.data.model
 
-data class Perfil(
-    var mail: String,
+data class User(
+    var email: String,
+    var name: String,
     var password: String)

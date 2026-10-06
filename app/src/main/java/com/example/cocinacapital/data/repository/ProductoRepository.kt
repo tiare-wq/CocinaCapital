@@ -13,7 +13,7 @@ class ProductoRepository {
             1,
             "Macarones",
             "Dulces con merengue y masas",
-            "Los Colonos",
+            null,
             6,
             5990.0,
             TipoPostre.REPOSTERIA
@@ -23,7 +23,7 @@ class ProductoRepository {
             2,
             "Pie de Limón",
             "Pie de limón con merengue",
-            "XurrosCafe",
+            null,
             6,
             4590.0,
             TipoPostre.TARTA
@@ -33,7 +33,7 @@ class ProductoRepository {
             3,
             "Cuarto de libra",
             "Hamburguesa con doble queso cheddar, peperonis, cebolla y ketchup",
-            "RoofBurguer",
+            null,
             10,
             6990.0,
             TipoGuarnicion.PAPAS
