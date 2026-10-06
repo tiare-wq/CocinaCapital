@@ -43,8 +43,11 @@ enum class TipoBebida {
 }
 
 open class Producto(
+    val id: Int,
     val nombre: String,
     val descr: String,
+    val restaruante: Restaurante,
+    val stock: Int,
     precioInicial: Double
 ) {
     var precio = 0.0
@@ -72,11 +75,14 @@ open class Producto(
 }
 
 open class Entrada(
+    id: Int,
     nombre: String,
     descr: String,
+    restaruante: Restaurante,
+    stock: Int,
     precio: Double,
     val tipoEntrada: TipoEntrada
-): Producto(nombre, descr, precio) {
+): Producto(id, nombre, descr, restaruante, stock, precio) {
 
     override fun mostrarProducto() {
         super.mostrarProducto()
@@ -85,11 +91,14 @@ open class Entrada(
 }
 
 open class PlatoPrincipal(
+    id: Int,
     nombre: String,
     descr: String,
+    restaruante: Restaurante,
+    stock: Int,
     precio: Double,
     val tipoPlatoPrincipal: TipoPlatoPrincipal
-): Producto(nombre, descr, precio) {
+): Producto(id, nombre, descr, restaruante, stock, precio) {
 
     override fun mostrarProducto() {
         super.mostrarProducto()
@@ -98,11 +107,14 @@ open class PlatoPrincipal(
 }
 
 open class Guarnicion (
+    id: Int,
     nombre: String,
     descr: String,
+    restaruante: Restaurante,
+    stock: Int,
     precio: Double,
     val tipoGuarnicion: TipoGuarnicion
-): Producto(nombre, descr, precio) {
+): Producto(id, nombre, descr, restaruante, stock, precio) {
 
     override fun mostrarProducto() {
         super.mostrarProducto()
@@ -111,11 +123,14 @@ open class Guarnicion (
 }
 
 open class Postre (
+    id: Int,
     nombre: String,
     descr: String,
+    restaruante: Restaurante,
+    stock: Int,
     precio: Double,
     val tipoPostre: TipoPostre
-): Producto(nombre, descr, precio) {
+): Producto(id, nombre, descr, restaruante, stock, precio) {
 
     override fun mostrarProducto() {
         super.mostrarProducto()
@@ -124,11 +139,14 @@ open class Postre (
 }
 
 open class Bebida (
+    id: Int,
     nombre: String,
     descr: String,
+    restaruante: Restaurante,
+    stock: Int,
     precio: Double,
     val tipoBebida: TipoBebida
-): Producto(nombre, descr, precio) {
+): Producto(id, nombre, descr, restaruante, stock, precio) {
 
     override fun mostrarProducto() {
         super.mostrarProducto()
@@ -154,6 +172,8 @@ open class ExperienciaCulinaria(
         precio = precioInicial
     }
 }
+
+class Restaurante()
 
 // ======================================
 // PERFILES
