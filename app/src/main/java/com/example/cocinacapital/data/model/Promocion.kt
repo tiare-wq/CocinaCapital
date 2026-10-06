@@ -7,5 +7,6 @@ data class Promocion(
     val descripcion: String,
     val descuento: Int,
     val distancia: Double,
-    val imagen: Int
+    val imagen: Int,
+    val activo: Boolean
 )

@@ -6,7 +6,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.cocinacapital.data.repository.PreguntasRepository
 import com.example.cocinacapital.ui.screen.LocationScreen
-import com.example.cocinacapital.ui.screen.LogginScreen
+import com.example.cocinacapital.ui.screen.LoginScreen
 import com.example.cocinacapital.ui.screen.PreguntasScreen
 import com.example.cocinacapital.ui.screen.RegistroScreen
 
@@ -16,43 +16,43 @@ fun LogginNavigation() {
 
     NavHost(
         navController = navController,
-        startDestination = LogginRoutes.INICIO_SESION
+        startDestination = LoginRoutes.INICIO_SESION
     ) {
-        composable (LogginRoutes.INICIO_SESION) {
-            LogginScreen(
+        composable (LoginRoutes.INICIO_SESION) {
+            LoginScreen(
                 onRegistroClick = {
-                    navController.navigate(LogginRoutes.REGISTRO)
+                    navController.navigate(LoginRoutes.REGISTRO)
                 }
             )
         }
 
-        composable (LogginRoutes.REGISTRO) {
+        composable (LoginRoutes.REGISTRO) {
             RegistroScreen(
                 onBackClick = {
                     navController.popBackStack()
                 },
                 onPreguntasClick = {
-                    navController.navigate(LogginRoutes.PREGUNTAS)
+                    navController.navigate(LoginRoutes.PREGUNTAS)
                 }
             )
         }
 
-        composable(LogginRoutes.PREGUNTAS) {
+        composable(LoginRoutes.PREGUNTAS) {
             val preguntas = PreguntasRepository()
             PreguntasScreen(preguntas.obtenerPreguntas(),
-                onLocationClick = { navController.navigate(LogginRoutes.LOCATION) } )
+                onLocationClick = { navController.navigate(LoginRoutes.LOCATION) } )
         }
 
-        composable(LogginRoutes.LOCATION) {
+        composable(LoginRoutes.LOCATION) {
             LocationScreen (
-                onInicioClick = { navController.navigate(LogginRoutes.INICIO)}
+                onInicioClick = { navController.navigate(LoginRoutes.INICIO)}
             )
         }
     }
 
 }
 
-object LogginRoutes {
+object LoginRoutes {
     const val INICIO_SESION = "inicio_sesion"
     const val REGISTRO = "registro"
     const val LOCATION = "location"

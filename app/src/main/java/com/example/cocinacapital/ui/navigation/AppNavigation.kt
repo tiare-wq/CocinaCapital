@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -32,7 +33,7 @@ fun AppNavigation() {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     var currentRoute = navBackStackEntry?.destination?.route
-    val items = listOf<Routes>(Routes.HOME, Routes.BUSQUEDA, Routes.MAPA, Routes.FAVORITOS, Routes.PERFIL)
+    val items = listOf<Routes>(Routes.HOME, Routes.EXPLORAR, Routes.MAPA, Routes.FAVORITOS, Routes.PERFIL)
 
     Scaffold(
         bottomBar = {
@@ -75,16 +76,33 @@ fun AppNavigation() {
         ) {
 
             composable(route = Routes.HOME.ruta) {
+                val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
                 HomeScreen(
-                    onBackClick =
-                        { navController.navigate(Routes.HOME.ruta) },
+                    uiState,
+
+                    onExplorarClick = {
+                        navController.navigate(Routes.EXPLORAR.ruta)
+                    },
+                    onLoginClick = {
+                        navController.navigate(LoginRoutes.INICIO_SESION)
+                    },
+                    onCartClick = {
+                        navController.navigate(Routes.CART.ruta)
+                    },
+                    onProductoClick = {
+
+                    },
+                    onBackClick = {
+                        navController.navigate(Routes.HOME.ruta)
+                    },
                     Cliente("Jorge")
                 )
             }
 
-            composable(route = Routes.BUSQUEDA.ruta) {
+            composable(route = Routes.EXPLORAR.ruta) {
                 BusquedaScreen(onBusquedaClick = {
-                    navController.navigate(Routes.BUSQUEDA.ruta)
+                    navController.navigate(Routes.EXPLORAR.ruta)
                 })
             }
 

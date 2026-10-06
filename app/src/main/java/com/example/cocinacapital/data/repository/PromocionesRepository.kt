@@ -13,7 +13,8 @@ class PromocionesRepository {
             descripcion = "Disfruta dos hamburguesas por el precio de una",
             descuento = 50,
             distancia = 1.2,
-            imagen = R.drawable.promo_burger
+            imagen = R.drawable.promo_burger,
+            true
         ),
 
         Promocion(
@@ -23,7 +24,8 @@ class PromocionesRepository {
             descripcion = "Descuento en tablas seleccionadas",
             descuento = 30,
             distancia = 2.1,
-            imagen = R.drawable.sushi
+            imagen = R.drawable.sushi,
+            true
         ),
 
         Promocion(
@@ -33,7 +35,16 @@ class PromocionesRepository {
             descripcion = "Descuento en la taquería de la casa",
             descuento = 70,
             distancia = 8.2,
-            imagen = R.drawable.comida_mexicana
+            imagen = R.drawable.comida_mexicana,
+            true
         )
     )
+
+    fun getPromociones(): List<Promocion> {
+        return promociones
+    }
+
+    fun getPromocionesActivas(): List<Promocion> {
+        return promociones.filter { it.activo }
+    }
 }

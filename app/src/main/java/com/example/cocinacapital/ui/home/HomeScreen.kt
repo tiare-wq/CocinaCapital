@@ -19,9 +19,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.key
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -32,7 +30,6 @@ import com.example.cocinacapital.data.model.Promocion
 import com.example.cocinacapital.ui.components.FeatureCard
 import com.example.cocinacapital.ui.components.ProductoCard
 import org.example.Cliente
-import org.example.Producto
 
 @Composable
 fun HomeRoute(
@@ -49,7 +46,7 @@ fun HomeRoute(
         onExplorarClick,
         onLoginClick,
         onCartClick,
-        onProductoClick,
+        onProductoClick as (Int) -> Unit,
         onBackClick,
         Cliente("Jorge")
     )

@@ -14,8 +14,8 @@ enum class Routes(
         R.drawable.home_unselected
     ),
 
-    BUSQUEDA(
-        "busqueda",
+    EXPLORAR(
+        "explorar",
         "Explorar",
         R.drawable.explorar_selected,
         R.drawable.explorar_unselected
@@ -39,5 +39,38 @@ enum class Routes(
         "Perfil",
         R.drawable.perfil_selected,
         R.drawable.perfil_unselected
+    ),
+
+    CART(
+        "cart",
+        "Cart Item",
+        0,
+        0
+    ),
+
+    INICIO_SESION(
+        "inicio_sesion",
+        "Inicio Sesión",
+        0,
+        0
+    ),
+
+    REGISTRO(
+        "registro",
+        "Registro",
+        0,
+        0),
+
+    LOCATION(
+        "location",
+        "Locación",
+        0,
+        0),
+
+    PREGUNTAS(
+        "preguntas",
+        "Preguntas de Personalización",
+        0,
+        0
     )
 }
