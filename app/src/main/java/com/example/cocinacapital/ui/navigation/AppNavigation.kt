@@ -109,7 +109,7 @@ fun AppNavigation() {
             composable(LoginRoutes.INICIO_SESION) {
                 LoginScreen(
                     onRegistroClick = { navController.navigate(LoginRoutes.REGISTRO) },
-                    onLoginSuccess = { usuario ->
+                    onLoginSuccess = {usuario ->
                         user = usuario
                         navController.navigate(Routes.HOME.ruta) {
                             popUpTo(LoginRoutes.INICIO_SESION) { inclusive = true }
@@ -158,7 +158,7 @@ fun AppNavigation() {
                             AppContainer.cartRepository.addProductos(it)
                         }
                     },
-                    cliente = user
+                    user = user
                 )
             }
 

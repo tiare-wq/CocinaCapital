@@ -24,9 +24,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.cocinacapital.R
+import com.example.cocinacapital.data.model.Cliente
+import com.example.cocinacapital.data.model.User
 import com.example.cocinacapital.ui.components.FeatureCard
 import com.example.cocinacapital.ui.components.ProductoCard
-import com.example.cocinacapital.data.model.User
+
 @Composable
 fun HomeRoute(
     viewModel: HomeViewModel,
@@ -34,7 +36,7 @@ fun HomeRoute(
     onLoginClick: () -> Unit,
     onCartClick: () -> Unit,
     onProductoClick: (Int) -> Unit,
-    cliente: User?
+    user: User?
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -44,7 +46,7 @@ fun HomeRoute(
         onLoginClick = onLoginClick,
         onCartClick = onCartClick,
         onProductoClick = onProductoClick,
-        cliente = cliente
+        cliente = user
     )
 }
 
@@ -90,7 +92,7 @@ fun HomeScreen(
         }
 
         item {
-            Text("¡Hola ${cliente?.name?:"comensal"}!", style = MaterialTheme.typography.headlineLarge)
+            Text("¡Hola ${cliente?.name}!", style = MaterialTheme.typography.headlineLarge)
             Text("¿Qué te gustaría probar hoy?", fontSize = 20.sp)
         }
 

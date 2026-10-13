@@ -113,7 +113,7 @@ fun LoginScreen(
 
             Button(
                 onClick = {
-                    val usuario = authRepository.login(email = mail.trim(), password = password)
+                    val usuario = authRepository.login(mail.trim(), password)
                     if (usuario != null) {
                         errorMessage = ""
                         onLoginSuccess(usuario)
