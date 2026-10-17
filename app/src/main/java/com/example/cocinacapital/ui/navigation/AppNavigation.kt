@@ -30,6 +30,10 @@ import com.example.cocinacapital.data.AppContainer
 import com.example.cocinacapital.data.model.User
 import com.example.cocinacapital.ui.home.HomeRoute
 import com.example.cocinacapital.ui.home.HomeViewModel
+import com.example.cocinacapital.ui.perfil.EditarPerfilScreen
+import com.example.cocinacapital.ui.perfil.EditarTarjetaScreen
+import com.example.cocinacapital.ui.perfil.HistorialScreen
+import com.example.cocinacapital.ui.perfil.MisTicketsScreen
 import com.example.cocinacapital.ui.screen.BusquedaScreen
 import com.example.cocinacapital.ui.screen.CartScreen
 import com.example.cocinacapital.ui.screen.FavoritosScreen
@@ -175,7 +179,10 @@ fun AppNavigation() {
             }
 
             composable(Routes.PERFIL.ruta) {
-                PerfilScreen(onPerfilClick = {})
+                PerfilScreen(
+                    onPerfilClick = {},
+                    navController = navController,
+                    user = user)
             }
 
             composable(Routes.CART.ruta) {
@@ -192,6 +199,22 @@ fun AppNavigation() {
                     onRemove = { id -> AppContainer.cartRepository.remove(id) },
                     onBack = { navController.popBackStack() }
                 )
+            }
+
+            // RUTAS DE PROFILE
+            composable(PerfilRoutes.tickets) {
+                MisTicketsScreen()
+            }
+
+            composable(PerfilRoutes.editarPerfil) {
+                EditarPerfilScreen()
+            }
+
+            composable(PerfilRoutes.editarTarjeta) {
+                EditarTarjetaScreen()
+            }
+            composable(PerfilRoutes.historial) {
+                HistorialScreen()
             }
         }
     }

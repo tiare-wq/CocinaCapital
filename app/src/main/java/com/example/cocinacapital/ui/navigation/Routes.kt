@@ -48,3 +48,10 @@ enum class Routes(
         0
     )
 }
+
+object PerfilRoutes {
+    const val tickets = "perfil/tickets"
+    const val editarTarjeta = "perfil/editar-tarjeta"
+    const val editarPerfil = "perfil/editar-perfil"
+    const val historial = "perfil/historial"
+}
