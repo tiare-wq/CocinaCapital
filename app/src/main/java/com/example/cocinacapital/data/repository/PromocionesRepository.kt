@@ -1,13 +1,115 @@
 package com.example.cocinacapital.data.repository
 
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.toMutableStateList
 import com.example.cocinacapital.R
+import com.example.cocinacapital.data.model.Local
 import com.example.cocinacapital.data.model.Promocion
 
 class PromocionesRepository {
+
+    val localRepository = LocalRepository()
+    val productoRepository = ProductoRepository()
+
+    private val productos = productoRepository.getProductos()
+
+    // Productos que aplica la promoción
     private val promociones = listOf(
-        Promocion(1, "Burger House", "2x1 en hamburguesas", "Disfruta dos hamburguesas por el precio de una", 50, 1.2, R.drawable.promo_burger),
-        Promocion(2, "Sushi House", "30% en sushi", "Descuento en tablas seleccionadas", 30, 2.1, R.drawable.sushi),
-        Promocion(3, "Taco Bell", "70% en tacos", "Descuento en la taquería de la casa", 70, 8.2, R.drawable.comida_mexicana)
+
+        // LA PICA DE JUAN
+        Promocion(
+            id = 1,
+            local = requireNotNull(localRepository.getById(1)),
+            productos = mutableListOf(
+                productos[0],
+                productos[1]
+            ),
+            titulo = "Sabores Chilenos",
+            descripcion = "Disfruta de una leche asada y papas rústicas con un descuento especial.",
+            descuento = 20,
+            distancia = 0.5,
+            imagen = R.drawable.producto_default,
+            activa = true
+        ),
+
+        // PIZZA NAPOLI
+        Promocion(
+            id = 2,
+            local = requireNotNull(localRepository.getById(2)),
+            productos = mutableListOf(
+                productos[2],
+                productos[3]
+            ),
+            titulo = "Momento Italiano",
+            descripcion = "Acompaña tu experiencia italiana con un delicioso tiramisú y papas fritas.",
+            descuento = 15,
+            distancia = 0.8,
+            imagen = R.drawable.producto_default,
+            activa = true
+        ),
+
+        // SUSHI HOUSE
+        Promocion(
+            id = 3,
+            local = requireNotNull(localRepository.getById(3)),
+            productos = mutableListOf(
+                productos[4],
+                productos[5]
+            ),
+            titulo = "Experiencia Japonesa",
+            descripcion = "Disfruta de mochis y papas tempura en una combinación especial.",
+            descuento = 25,
+            distancia = 1.2,
+            imagen = R.drawable.producto_default,
+            activa = true
+        ),
+
+        // SABORES DEL PERÚ
+        Promocion(
+            id = 4,
+            local = requireNotNull(localRepository.getById(4)),
+            productos = mutableListOf(
+                productos[6],
+                productos[7]
+            ),
+            titulo = "Tradición Peruana",
+            descripcion = "Prueba el tradicional suspiro limeño junto a unas deliciosas papas a la huancaína.",
+            descuento = 20,
+            distancia = 1.5,
+            imagen = R.drawable.producto_default,
+            activa = true
+        ),
+
+        // CAFÉ CENTRAL
+        Promocion(
+            id = 5,
+            local = requireNotNull(localRepository.getById(5)),
+            productos = mutableListOf(
+                productos[8],
+                productos[9]
+            ),
+            titulo = "Dulce Tentación",
+            descripcion = "Combina un cheesecake de frutilla con un brownie de chocolate.",
+            descuento = 30,
+            distancia = 0.7,imagen = R.drawable.producto_default,
+            activa = true
+        ),
+
+        // GREEN FOOD
+        Promocion(
+            id = 6,
+            local = requireNotNull(localRepository.getById(6)),
+            productos = mutableListOf(
+                productos[10],
+                productos[11]
+            ),
+            titulo = "Green Experience",
+            descripcion = "Disfruta de una alternativa fresca y natural con productos seleccionados.",
+            descuento = 15,
+            distancia = 1.0,
+            imagen = R.drawable.producto_default,
+            activa = true
+        )
     )
 
     fun getPromociones(): List<Promocion> = promociones

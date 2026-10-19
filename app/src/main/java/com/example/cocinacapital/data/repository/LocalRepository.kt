@@ -9,7 +9,9 @@ class LocalRepository {
         Local(
             id = 1,
             nombre = "La Pica de Juan",
+            descripcion = "Disfruta de la auténtica gastronomía chilena, con preparaciones tradicionales y sabores caseros.",
             especialidades = mutableListOf("Comida Chilena"),
+            ubicacion = "Viña del Mar, Región de Valparaíso",
             latitud = -33.0245,
             longitud = -71.5518
         ),
@@ -17,7 +19,9 @@ class LocalRepository {
         Local(
             id = 2,
             nombre = "Pizza Napoli",
+            descripcion = "Restaurante especializado en pizzas de inspiración italiana y preparaciones rápidas.",
             especialidades = mutableListOf("Italiana", "Comida Rápida"),
+            ubicacion = "Viña del Mar, Región de Valparaíso",
             latitud = -33.0240,
             longitud = -71.5525
         ),
@@ -25,7 +29,9 @@ class LocalRepository {
         Local(
             id = 3,
             nombre = "Sushi House",
+            descripcion = "Descubre una selección de preparaciones japonesas, sushi y sabores orientales.",
             especialidades = mutableListOf("Japonesa"),
+            ubicacion = "Viña del Mar, Región de Valparaíso",
             latitud = -33.0260,
             longitud = -71.5530
         ),
@@ -33,7 +39,9 @@ class LocalRepository {
         Local(
             id = 4,
             nombre = "Sabores del Perú",
+            descripcion = "Gastronomía peruana con preparaciones tradicionales, pescados y mariscos.",
             especialidades = mutableListOf("Peruana", "Mariscos y Pescados"),
+            ubicacion = "Viña del Mar, Región de Valparaíso",
             latitud = -33.0250,
             longitud = -71.5500
         ),
@@ -41,7 +49,9 @@ class LocalRepository {
         Local(
             id = 5,
             nombre = "Café Central",
+            descripcion = "Un espacio acogedor para disfrutar de café, pastelería y preparaciones dulces.",
             especialidades = mutableListOf("Cafetería", "Pastelería"),
+            ubicacion = "Viña del Mar, Región de Valparaíso",
             latitud = -33.0270,
             longitud = -71.5540
         ),
@@ -49,7 +59,9 @@ class LocalRepository {
         Local(
             id = 6,
             nombre = "Green Food",
+            descripcion = "Alternativas gastronómicas vegetarianas e internacionales para disfrutar de una alimentación variada.",
             especialidades = mutableListOf("Vegetariana", "Internacional"),
+            ubicacion = "Viña del Mar, Región de Valparaíso",
             latitud = -33.0280,
             longitud = -71.5520
         )

@@ -49,7 +49,7 @@ fun FeatureCard(
             ) {
 
                 Text(
-                    text = promocion.restaurante,
+                    text = promocion.local.nombre,
                     style = MaterialTheme.typography.labelLarge
                 )
 

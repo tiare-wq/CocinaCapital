@@ -34,6 +34,7 @@ import com.example.cocinacapital.data.model.Tarjeta
 import com.example.cocinacapital.data.model.User
 import com.example.cocinacapital.data.repository.LocalRepository
 import com.example.cocinacapital.data.repository.ProductoRepository
+import com.example.cocinacapital.data.repository.PromocionesRepository
 import com.example.cocinacapital.data.repository.TarjetaRepository
 import com.example.cocinacapital.ui.home.HomeRoute
 import com.example.cocinacapital.ui.home.HomeViewModel
@@ -45,6 +46,7 @@ import com.example.cocinacapital.ui.perfil.PreferenciasScreen
 import com.example.cocinacapital.ui.screen.BusquedaScreen
 import com.example.cocinacapital.ui.screen.CartScreen
 import com.example.cocinacapital.ui.screen.FavoritosScreen
+import com.example.cocinacapital.ui.screen.LocalScreen
 import com.example.cocinacapital.ui.screen.LocationScreen
 import com.example.cocinacapital.ui.screen.LoginScreen
 import com.example.cocinacapital.ui.screen.MapasScreen
@@ -73,7 +75,9 @@ fun AppNavigation() {
         ProductoRepository()
     }
 
-    val localRepository = LocalRepository()
+    val localRepository = remember { LocalRepository() }
+
+    val promocionRepository = remember { PromocionesRepository() }
 
     val tarjetaRepository = remember {
         TarjetaRepository()
@@ -81,6 +85,10 @@ fun AppNavigation() {
 
     var productos by remember {
         mutableStateOf<MutableList<Producto>>(productoRepository.getProductos().toMutableStateList())
+    }
+
+    var favoritos by remember {
+        mutableStateOf(setOf<Int>())
     }
 
     var user by remember {
@@ -213,23 +221,69 @@ fun AppNavigation() {
                 )
             }
 
+            // Rutas de explorar productos
             composable(Routes.EXPLORAR.ruta) {
                 BusquedaScreen(
-                    productos = productos,
-                    onProductoClick = {})
+                    locales = localRepository.getAll(),
+                    promociones = promocionRepository.getPromociones(),
+                    favoritos = favoritos,
+                    onToggleFavorito = { id ->
+                        // Tu lógica actual para agregar o quitar productos favoritos
+                    },
+                    onLocalClick = { local ->
+                        navController.navigate("local/${local.id}")
+                    },
+                    onPromocionClick = { promocion ->
+                        // Navegar al detalle de la promoción si tienes esa pantalla
+                    }
+                )
+            }
+
+            composable("local/{localId}") { backStackEntry ->
+
+                val localId = backStackEntry.arguments
+                    ?.getString("localId")
+                    ?.toIntOrNull()
+
+                val local = localId?.let {
+                    localRepository.getById(it)
+                }
+
+                if (local != null) {
+                    LocalScreen(
+                        local = local,
+                        promociones = promocionRepository.getPromociones(),
+                        favoritos = favoritos,
+                        onToggleFavorito = { id ->
+                            // Reutiliza tu lógica compartida de favoritos.
+                        },
+                        onVolver = {
+                            navController.popBackStack()
+                        }
+                    )
+                }
             }
 
             composable(Routes.MAPA.ruta) {
                 MapasScreen(
                     locales = localRepository.getAll(),
                     onLocalClick = { local ->
-                        navController.navigate("restaurante/${local.id}")
-                    }
+                        navController.navigate("local/${local.id}")
+                    },
                 )
             }
 
             composable(Routes.FAVORITOS.ruta) {
-                FavoritosScreen(onFavoritosClick = {})
+                FavoritosScreen(
+                    productos = productos,
+                    favoritos = favoritos,
+                    onQuitarFavorito = { id ->
+                        favoritos = favoritos - id
+                    },
+                    onProductoClick = { producto ->
+                        // Conserva aquí tu navegación actual al detalle.
+                    }
+                )
             }
 
             composable(Routes.PERFIL.ruta) {

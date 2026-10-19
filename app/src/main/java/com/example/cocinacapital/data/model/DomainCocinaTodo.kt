@@ -10,7 +10,7 @@ open class Producto(
     val id: Int,
     val nombre: String,
     val descr: String,
-    val restaurante: Restaurante?,
+    val restaurante: Restaurante,
     val stock: Int,
     precioInicial: Double
 ) {
@@ -33,27 +33,27 @@ open class Producto(
 }
 
 class Entrada(
-    id: Int, nombre: String, descr: String, restaurante: Restaurante?, stock: Int,
+    id: Int, nombre: String, descr: String, restaurante: Restaurante, stock: Int,
     precio: Double, val tipoEntrada: TipoEntrada
 ) : Producto(id, nombre, descr, restaurante, stock, precio)
 
 class PlatoPrincipal(
-    id: Int, nombre: String, descr: String, restaurante: Restaurante?, stock: Int,
+    id: Int, nombre: String, descr: String, restaurante: Restaurante, stock: Int,
     precio: Double, val tipoPlatoPrincipal: TipoPlatoPrincipal
 ) : Producto(id, nombre, descr, restaurante, stock, precio)
 
 class Guarnicion(
-    id: Int, nombre: String, descr: String, restaurante: Restaurante?, stock: Int,
+    id: Int, nombre: String, descr: String, restaurante: Restaurante, stock: Int,
     precio: Double, val tipoGuarnicion: TipoGuarnicion
 ) : Producto(id, nombre, descr, restaurante, stock, precio)
 
 class Postre(
-    id: Int, nombre: String, descr: String, restaurante: Restaurante?, stock: Int,
+    id: Int, nombre: String, descr: String, restaurante: Restaurante, stock: Int,
     precio: Double, val tipoPostre: TipoPostre
 ) : Producto(id, nombre, descr, restaurante, stock, precio)
 
 class Bebida(
-    id: Int, nombre: String, descr: String, restaurante: Restaurante?, stock: Int,
+    id: Int, nombre: String, descr: String, restaurante: Restaurante, stock: Int,
     precio: Double, val tipoBebida: TipoBebida
 ) : Producto(id, nombre, descr, restaurante, stock, precio)
 
@@ -78,16 +78,19 @@ class ExperienciaCulinaria(
 open class Restaurante (
     val id: Int,
     var nombre: String,
+    val descripcion: String,
     val especialidades: MutableList<String>
 )
 
 class Local (
     id: Int,
     nombre: String,
+    descripcion: String,
     especialidades: MutableList<String>,
+    val ubicacion: String,
     val latitud: Double,
     val longitud: Double,
-): Restaurante(id, nombre, especialidades)
+): Restaurante(id, nombre, descripcion, especialidades)
 
 class Cliente(
     var nombre: String
