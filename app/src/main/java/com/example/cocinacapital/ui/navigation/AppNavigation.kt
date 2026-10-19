@@ -11,6 +11,7 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import com.example.cocinacapital.data.repository.TicketsRepository
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -79,6 +80,7 @@ fun AppNavigation() {
     val localRepository = remember { LocalRepository() }
 
     val promocionRepository = remember { PromocionesRepository() }
+    val ticketsRepository = remember { TicketsRepository() }
 
     val tarjetaRepository = remember {
         TarjetaRepository()
@@ -240,8 +242,15 @@ fun AppNavigation() {
                             navController.popBackStack()
                         },
                         onCanjear = { promocionSeleccionada ->
-                            // Próximo paso:
-                            // Guardar en Mis Tickets
+                            user?.let { usuario ->
+                                val canjeado = ticketsRepository.canjearPromocion(
+                                    usuarioId = usuario.id,
+                                    promocion = promocionSeleccionada
+                                )
+                                if (canjeado) {
+                                    navController.navigate(PerfilRoutes.tickets)
+                                }
+                            }
                         }
                     )
                 }
@@ -342,7 +351,11 @@ fun AppNavigation() {
 
             // RUTAS DE PROFILE
             composable(PerfilRoutes.tickets) {
-                MisTicketsScreen()
+                MisTicketsScreen(
+                    tickets = ticketsRepository.obtenerTickets(
+                        usuarioId = user?.id ?: 0
+                    )
+                )
             }
 
             composable(PerfilRoutes.editarPerfil) {
