@@ -1,9 +1,6 @@
 package com.example.cocinacapital.data.repository
 
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.toMutableStateList
 import com.example.cocinacapital.R
-import com.example.cocinacapital.data.model.Local
 import com.example.cocinacapital.data.model.Promocion
 
 class PromocionesRepository {
@@ -28,7 +25,7 @@ class PromocionesRepository {
             descripcion = "Disfruta de una leche asada y papas rústicas con un descuento especial.",
             descuento = 20,
             distancia = 0.5,
-            imagen = R.drawable.producto_default,
+            imagen = R.drawable.promo1,
             activa = true
         ),
 
@@ -44,7 +41,7 @@ class PromocionesRepository {
             descripcion = "Acompaña tu experiencia italiana con un delicioso tiramisú y papas fritas.",
             descuento = 15,
             distancia = 0.8,
-            imagen = R.drawable.producto_default,
+            imagen = R.drawable.promo2,
             activa = true
         ),
 
@@ -60,7 +57,7 @@ class PromocionesRepository {
             descripcion = "Disfruta de mochis y papas tempura en una combinación especial.",
             descuento = 25,
             distancia = 1.2,
-            imagen = R.drawable.producto_default,
+            imagen = R.drawable.promo3,
             activa = true
         ),
 
@@ -76,7 +73,7 @@ class PromocionesRepository {
             descripcion = "Prueba el tradicional suspiro limeño junto a unas deliciosas papas a la huancaína.",
             descuento = 20,
             distancia = 1.5,
-            imagen = R.drawable.producto_default,
+            imagen = R.drawable.promo4,
             activa = true
         ),
 
@@ -91,7 +88,7 @@ class PromocionesRepository {
             titulo = "Dulce Tentación",
             descripcion = "Combina un cheesecake de frutilla con un brownie de chocolate.",
             descuento = 30,
-            distancia = 0.7,imagen = R.drawable.producto_default,
+            distancia = 0.7,imagen = R.drawable.promo5,
             activa = true
         ),
 
@@ -107,7 +104,7 @@ class PromocionesRepository {
             descripcion = "Disfruta de una alternativa fresca y natural con productos seleccionados.",
             descuento = 15,
             distancia = 1.0,
-            imagen = R.drawable.producto_default,
+            imagen = R.drawable.promo6,
             activa = true
         )
     )
