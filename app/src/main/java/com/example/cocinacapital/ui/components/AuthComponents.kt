@@ -89,7 +89,7 @@ internal fun AuthLayout(
 }
 
 @Composable
-private fun AuthHeader() {
+internal fun AuthHeader() {
     Box(
         modifier = Modifier
             .fillMaxWidth()
