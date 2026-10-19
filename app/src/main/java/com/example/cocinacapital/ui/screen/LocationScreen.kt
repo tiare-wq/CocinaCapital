@@ -21,7 +21,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import com.example.cocinacapital.data.model.User
+import com.example.cocinacapital.data.model.Ubicacion
+import com.example.cocinacapital.data.repository.UbicacionRepository
 import com.example.cocinacapital.ui.components.LocationManager
 
 @Composable
@@ -34,16 +35,33 @@ fun LocationScreen(
     var locationText by remember { mutableStateOf("Aún no se ha obtenido la ubicación.") }
     var locationReady by remember { mutableStateOf(false) }
 
+    var ubicacionPendiente by remember {
+        mutableStateOf<Ubicacion?>(null)
+    }
+
     val permissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
+
     ) { permissions ->
         val granted = permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true ||
                 permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true
 
         if (granted) {
             locationManager.getCurrentLocation(
+
+
                 onLocationReceived = { location ->
-                    locationText = "Latitud: ${location.latitude}\nLongitud: ${location.longitude}"
+
+                    ubicacionPendiente = Ubicacion(
+                        latitud = location.latitude,
+                        longitud = location.longitude
+                    )
+
+                    locationText = """
+                        Latitud: ${location.latitude}
+                        Longitud: ${location.longitude}
+                    """.trimIndent()
+
                     locationReady = true
                 },
                 onError = { message ->
@@ -85,7 +103,17 @@ fun LocationScreen(
         Spacer(Modifier.height(12.dp))
 
         Button(
-            onClick = onInicioClick,
+            onClick = {
+                ubicacionPendiente?.let { ubicacion ->
+
+                    UbicacionRepository.actualizarUbicacion(
+                        latitud = ubicacion.latitud,
+                        longitud = ubicacion.longitud
+                    )
+
+                    onInicioClick()
+                }
+            },
             enabled = locationReady,
             modifier = Modifier.fillMaxWidth()
         ) {

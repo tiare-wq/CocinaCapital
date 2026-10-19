@@ -8,19 +8,26 @@ import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
+import kotlinx.coroutines.launch
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.cocinacapital.data.AppContainer
 import com.example.cocinacapital.data.model.User
+import com.example.cocinacapital.data.repository.UbicacionRepository
 import com.example.cocinacapital.ui.components.*
+import kotlinx.coroutines.flow.first
 
 @Composable
 fun LoginScreen(
     onRegistroClick: () -> Unit,
     onLoginSuccess: (User) -> Unit
 ) {
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+
     var mail by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
     var errorMessage by rememberSaveable { mutableStateOf("") }
@@ -74,14 +81,35 @@ fun LoginScreen(
             text = "Iniciar sesión",
             enabled = mail.isNotBlank() && password.isNotBlank(),
             onClick = {
+
                 val usuario = authRepository.login(
                     mail.trim(),
                     password
                 )
 
                 if (usuario != null) {
+
                     errorMessage = ""
-                    onLoginSuccess(usuario)
+
+                    scope.launch {
+
+                        // Recuperar última ubicación guardada
+                        val ubicacion = UbicacionRepository
+                            .obtenerUltimaUbicacion(context)
+                            .first()
+
+                        // Actualizar ubicación activa
+                        if (ubicacion != null) {
+                            UbicacionRepository.actualizarUbicacion(
+                                ubicacion.latitud,
+                                ubicacion.longitud
+                            )
+                        }
+
+                        // Continuar al inicio
+                        onLoginSuccess(usuario)
+                    }
+
                 } else {
                     errorMessage = "Correo o contraseña incorrectos."
                 }

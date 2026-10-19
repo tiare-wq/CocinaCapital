@@ -29,8 +29,11 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.cocinacapital.data.AppContainer
 import com.example.cocinacapital.data.model.Preferencia
+import com.example.cocinacapital.data.model.Producto
 import com.example.cocinacapital.data.model.Tarjeta
 import com.example.cocinacapital.data.model.User
+import com.example.cocinacapital.data.repository.LocalRepository
+import com.example.cocinacapital.data.repository.ProductoRepository
 import com.example.cocinacapital.data.repository.TarjetaRepository
 import com.example.cocinacapital.ui.home.HomeRoute
 import com.example.cocinacapital.ui.home.HomeViewModel
@@ -66,8 +69,18 @@ fun AppNavigation() {
 
     val showBottomBar = currentRoute in bottomItems.map { it.ruta }
 
+    val productoRepository = remember {
+        ProductoRepository()
+    }
+
+    val localRepository = LocalRepository()
+
     val tarjetaRepository = remember {
         TarjetaRepository()
+    }
+
+    var productos by remember {
+        mutableStateOf<MutableList<Producto>>(productoRepository.getProductos().toMutableStateList())
     }
 
     var user by remember {
@@ -201,11 +214,18 @@ fun AppNavigation() {
             }
 
             composable(Routes.EXPLORAR.ruta) {
-                BusquedaScreen(onBusquedaClick = {})
+                BusquedaScreen(
+                    productos = productos,
+                    onProductoClick = {})
             }
 
             composable(Routes.MAPA.ruta) {
-                MapasScreen(onMapasClick = {})
+                MapasScreen(
+                    locales = localRepository.getAll(),
+                    onLocalClick = { local ->
+                        navController.navigate("restaurante/${local.id}")
+                    }
+                )
             }
 
             composable(Routes.FAVORITOS.ruta) {
@@ -249,7 +269,7 @@ fun AppNavigation() {
                     onUpdateClick = { usuarioActualizado ->
                         updateUser(usuarioActualizado)
                         navController.popBackStack()},
-                    user = user?: User(0, "", "", "", 0, mutableListOf<Preferencia>())
+                    user = user?: User(0, "", "", "", 0, mutableListOf<Preferencia>(), 0.0, 0.0)
                 )
             }
 

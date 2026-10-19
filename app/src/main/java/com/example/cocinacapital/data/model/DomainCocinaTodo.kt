@@ -75,7 +75,19 @@ class ExperienciaCulinaria(
     }
 }
 
-class Restaurante
+open class Restaurante (
+    val id: Int,
+    var nombre: String,
+    val especialidades: MutableList<String>
+)
+
+class Local (
+    id: Int,
+    nombre: String,
+    especialidades: MutableList<String>,
+    val latitud: Double,
+    val longitud: Double,
+): Restaurante(id, nombre, especialidades)
 
 class Cliente(
     var nombre: String

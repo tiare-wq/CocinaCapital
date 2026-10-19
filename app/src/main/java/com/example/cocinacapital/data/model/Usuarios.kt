@@ -6,7 +6,9 @@ data class User(
     var name: String,
     var password: String,
     var foto: Int,
-    val preferencias: MutableList<Preferencia>)
+    val preferencias: MutableList<Preferencia>,
+    var latitud: Double?,
+    var longitud: Double?)
 
 data class Preferencia (
     val tipoPreferencia: TipoPreferencia,

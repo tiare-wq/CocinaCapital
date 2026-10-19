@@ -13,6 +13,8 @@ navigationCompose = "2.10.1"
 material = "1.12.0"
 playServicesLocation = "21.4.0"
 kotlinx-datetime = "0.8.0"
+datastore = "1.1.1"
+kotlinx-coroutines = "1.10.2"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -31,7 +33,6 @@ androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", versi
 androidx-compose-ui = { group = "androidx.compose.ui", name = "ui" }
 androidx-compose-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
 androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
-androidx-compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
 
 # Compose Foundation
 androidx-compose-foundation = { group = "androidx.compose.foundation", name = "foundation" }
@@ -49,15 +50,16 @@ androidx-navigation-compose = { group = "androidx.navigation", name = "navigatio
 # Google Play Services
 play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
 
-# Google Material Components (Views)
-google-material = { group = "com.google.android.material", name = "material", version.ref = "material" }
-
-# Datetime
-kotlinx-datetime = { group = "org.jetbrains.kotlinx", name="kotlinx-datetime", version.ref= "kotlinx-datetime" }
+# Ubicación
+androidx-datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
 
 # Testing
 androidx-compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 androidx-compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
+
+# Datos
+kotlinx-datetime = { group = "org.jetbrains.kotlinx", name="kotlinx-datetime", version.ref= "kotlinx-datetime" }
+kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlinx-coroutines" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

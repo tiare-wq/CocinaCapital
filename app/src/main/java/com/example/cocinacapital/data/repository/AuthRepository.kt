@@ -7,16 +7,16 @@ import com.example.cocinacapital.data.model.User
 class AuthRepository {
 
     private val usuarios = listOf<User>(
-        User(1, "ana@outlook.com", "Ana", "Anita27.", R.drawable.foto_ana, mutableListOf<Preferencia>()),
-        User(2, "miguelangel@gmail.com", "Miguel Angelo", "MonaTuLisa76.", R.drawable.foto_ana, mutableListOf<Preferencia>()),
-        User(3, "leonardo_dicaprio@outlook.com", "Lobo Wallstreet", "Rose2001.", R.drawable.foto_ana, mutableListOf<Preferencia>())
+        User(1, "ana@outlook.com", "Ana", "Anita27.", R.drawable.foto_ana, mutableListOf<Preferencia>(), 0.0, 0.0),
+        User(2, "miguelangel@gmail.com", "Miguel Angelo", "MonaTuLisa76.", R.drawable.foto_ana, mutableListOf<Preferencia>(), 0.0, 0.0),
+        User(3, "leonardo_dicaprio@outlook.com", "Lobo Wallstreet", "Rose2001.", R.drawable.foto_ana, mutableListOf<Preferencia>(), 0.0, 0.0)
     )
 
     fun login(email: String, password: String): User? {
         val user: User? = getUsuarioByEmail(email)
         if ( user != null && user.password == password ) {
             val id = usuarios.size + 1
-            return User(id, user.email, user.name, user.password, user.foto, user.preferencias)
+            return User(id, user.email, user.name, user.password, user.foto, user.preferencias, user.latitud, user.longitud)
         }
         return null
     }

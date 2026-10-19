@@ -79,11 +79,15 @@ dependencies {
     // Google Play Services
     implementation(libs.play.services.location)
 
-    // Datetime
+    // Datos
     implementation(libs.kotlinx.datetime)
+    implementation(libs.kotlinx.coroutines.android)
 
     // Testing
     testImplementation(libs.junit)
+
+    // Ubicación
+    implementation(libs.androidx.datastore.preferences)
 
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.junit)

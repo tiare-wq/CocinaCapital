@@ -124,7 +124,7 @@ fun EditarPerfilScreen(
                         validarMail(email) &&
                         validarPassword(password),
             onClick = {
-                val usuario = User(user.id, email, name, password, user.foto, user.preferencias)
+                val usuario = User(user.id, email, name, password, user.foto, user.preferencias, user.latitud, user.longitud)
                 authRepository.updateUser(usuario)
                 onUpdateClick(usuario)
             }

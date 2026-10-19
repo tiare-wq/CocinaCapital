@@ -101,7 +101,9 @@ fun RegistroScreen(
                     name = username,
                     password = password,
                     foto = R.drawable.default_profile,
-                    preferencias = mutableListOf())
+                    preferencias = mutableListOf(),
+                    latitud = 0.0,
+                    longitud = 0.0)
                 onPreguntasClick(usuario)
             }
         )
