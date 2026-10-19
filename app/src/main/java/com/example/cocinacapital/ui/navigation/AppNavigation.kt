@@ -207,6 +207,9 @@ fun AppNavigation() {
                         }
                     },
                     onCartClick = { navController.navigate(Routes.CART.ruta) },
+                    onPromocionClick = { promocionId ->
+                        // Próximo paso: navegar al detalle de esta promoción
+                    },
                     onProductoClick = { productId ->
                         AppContainer.productoRepository.findProductById(productId)?.let {
                             AppContainer.cartRepository.addProductos(it)

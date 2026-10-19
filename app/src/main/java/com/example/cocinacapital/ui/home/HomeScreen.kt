@@ -37,6 +37,7 @@ fun HomeRoute(
     onCartClick: () -> Unit,
     onProductoClick: (Int) -> Unit,
     onPerfilClick: () -> Unit,
+    onPromocionClick: (Int) -> Unit,
     user: User?
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -47,6 +48,7 @@ fun HomeRoute(
         onLoginClick = onLoginClick,
         onCartClick = onCartClick,
         onProductoClick = onProductoClick,
+        onPromocionClick = onPromocionClick,
         onPerfilClick = onPerfilClick,
         cliente = user
     )
@@ -58,6 +60,7 @@ fun HomeScreen(
     onExplorarClick: () -> Unit,
     onLoginClick: () -> Unit,
     onCartClick: () -> Unit,
+    onPromocionClick: (Int) -> Unit,
     onProductoClick: (Int) -> Unit,
     onPerfilClick: () -> Unit,
     cliente: User?
@@ -112,7 +115,12 @@ fun HomeScreen(
         }
 
         items(uiState.promociones, key = { it.id }) { promocion ->
-            FeatureCard(promocion)
+            FeatureCard(
+                promocion = promocion,
+                onClick = {
+                    onPromocionClick(promocion.id)
+                }
+            )
         }
 
         item {
