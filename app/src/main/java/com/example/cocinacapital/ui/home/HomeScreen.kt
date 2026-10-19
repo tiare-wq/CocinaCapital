@@ -36,6 +36,7 @@ fun HomeRoute(
     onLoginClick: () -> Unit,
     onCartClick: () -> Unit,
     onProductoClick: (Int) -> Unit,
+    onPerfilClick: () -> Unit,
     user: User?
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -46,6 +47,7 @@ fun HomeRoute(
         onLoginClick = onLoginClick,
         onCartClick = onCartClick,
         onProductoClick = onProductoClick,
+        onPerfilClick = onPerfilClick,
         cliente = user
     )
 }
@@ -57,6 +59,7 @@ fun HomeScreen(
     onLoginClick: () -> Unit,
     onCartClick: () -> Unit,
     onProductoClick: (Int) -> Unit,
+    onPerfilClick: () -> Unit,
     cliente: User?
 ) {
     if (uiState.isLoading) {

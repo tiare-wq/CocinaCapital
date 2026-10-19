@@ -3,6 +3,7 @@ package com.example.cocinacapital.data.repository
 import com.example.cocinacapital.R
 import com.example.cocinacapital.data.model.Option
 import com.example.cocinacapital.data.model.Pregunta
+import com.example.cocinacapital.data.model.TipoPreferencia
 
 class PreguntasRepository {
 
@@ -161,21 +162,24 @@ class PreguntasRepository {
             1,
             "¿Qué comida te gusta?",
             opcionesComida,
-            true
+            true,
+            TipoPreferencia.OPCIONES_COMIDA
         ),
 
         Pregunta(
             2,
             "¿Cuánto te gustaría gastar por persona?",
             opcionesPrecio,
-            false
+            false,
+            TipoPreferencia.OPCIONES_PRECIOS
         ),
 
         Pregunta(
             3,
             "¿Qué planes tienes hoy?",
             opcionesPlanes,
-            false
+            false,
+            TipoPreferencia.OPCIONES_PLANES
         )
     )
 

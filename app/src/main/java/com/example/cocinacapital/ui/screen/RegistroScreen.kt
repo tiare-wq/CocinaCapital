@@ -12,13 +12,18 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.example.cocinacapital.R
+import com.example.cocinacapital.data.model.User
+import com.example.cocinacapital.data.repository.AuthRepository
 import com.example.cocinacapital.ui.components.*
 
 @Composable
 fun RegistroScreen(
     onBackClick: () -> Unit,
-    onPreguntasClick: () -> Unit
+    onPreguntasClick: (User) -> Unit
 ) {
+    val authRepository = AuthRepository()
+
     var mail by rememberSaveable { mutableStateOf("") }
     var username by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
@@ -34,6 +39,8 @@ fun RegistroScreen(
     val requisitosPassword =
         "Usa al menos 8 caracteres, una mayúscula, " +
                 "un número y uno de estos símbolos: . ¡ ! ¿ ?"
+
+    val id = authRepository.siguienteId()
 
     AuthLayout(
         title = "Crea tu cuenta",
@@ -87,7 +94,16 @@ fun RegistroScreen(
         AuthPrimaryButton(
             text = "Registrarse",
             enabled = formularioValido,
-            onClick = onPreguntasClick
+            onClick = {
+                val usuario = User(
+                    id = id,
+                    email = mail,
+                    name = username,
+                    password = password,
+                    foto = R.drawable.default_profile,
+                    preferencias = mutableListOf())
+                onPreguntasClick(usuario)
+            }
         )
 
         Spacer(Modifier.height(22.dp))

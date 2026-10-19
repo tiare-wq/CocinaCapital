@@ -54,4 +54,6 @@ object PerfilRoutes {
     const val editarTarjeta = "perfil/editar-tarjeta"
     const val editarPerfil = "perfil/editar-perfil"
     const val historial = "perfil/historial"
+
+    const val editarPreferencias = "perfil/preferencias"
 }

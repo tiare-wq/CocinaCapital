@@ -1,18 +1,1 @@
-package com.example.cocinacapital.data.model
-
-import java.util.Date
-
-data class Tarjeta(
-    val nroTarjeta: Int,
-    val usuario: User,
-    val fechaVencimiento: Date,
-) {
-    init {
-        require(nroTarjeta.toString().length == 16) {
-            "La tarjeta debe tener exactamente 16 números"
-        }
-        require(usuario.name.isBlank()) {
-            "El usuario no puede ser nulo"
-        }
-    }
-}
+package com.example.cocinacapital.data.modelimport kotlinx.datetime.LocalDateimport kotlinx.datetime.TimeZoneimport kotlinx.datetime.todayInimport kotlin.time.Clock@kotlin.time.ExperimentalTimedata class Tarjeta(    val nroTarjeta: Long,    val usuario: User?,    val fechaVencimiento: LocalDate,    val prioritaria: Boolean) {    init {        require(nroTarjeta.toString().length == 16) {            "La tarjeta debe tener exactamente 16 números"        }        require(usuario != null && usuario.name.isNotBlank()) {            "El usuario no puede ser nulo"        }        require(fechaVencimiento >= Clock.System.todayIn(TimeZone.currentSystemDefault()))    }}

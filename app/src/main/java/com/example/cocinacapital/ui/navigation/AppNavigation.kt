@@ -14,6 +14,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -27,13 +28,17 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.cocinacapital.data.AppContainer
+import com.example.cocinacapital.data.model.Preferencia
+import com.example.cocinacapital.data.model.Tarjeta
 import com.example.cocinacapital.data.model.User
+import com.example.cocinacapital.data.repository.TarjetaRepository
 import com.example.cocinacapital.ui.home.HomeRoute
 import com.example.cocinacapital.ui.home.HomeViewModel
 import com.example.cocinacapital.ui.perfil.EditarPerfilScreen
 import com.example.cocinacapital.ui.perfil.EditarTarjetaScreen
 import com.example.cocinacapital.ui.perfil.HistorialScreen
 import com.example.cocinacapital.ui.perfil.MisTicketsScreen
+import com.example.cocinacapital.ui.perfil.PreferenciasScreen
 import com.example.cocinacapital.ui.screen.BusquedaScreen
 import com.example.cocinacapital.ui.screen.CartScreen
 import com.example.cocinacapital.ui.screen.FavoritosScreen
@@ -44,6 +49,7 @@ import com.example.cocinacapital.ui.screen.PerfilScreen
 import com.example.cocinacapital.ui.screen.PreguntasScreen
 import com.example.cocinacapital.ui.screen.RegistroScreen
 
+@kotlin.time.ExperimentalTime
 @Composable
 fun AppNavigation() {
     val navController = rememberNavController()
@@ -60,8 +66,24 @@ fun AppNavigation() {
 
     val showBottomBar = currentRoute in bottomItems.map { it.ruta }
 
+    val tarjetaRepository = remember {
+        TarjetaRepository()
+    }
+
     var user by remember {
         mutableStateOf<User?>(null)
+    }
+
+    var tarjetas by remember {
+        mutableStateOf<MutableList<Tarjeta>>(emptyList<Tarjeta>().toMutableStateList())
+    }
+
+    fun updateUser(nuevoUsuario: User) {
+        user = nuevoUsuario
+    }
+
+    fun cerrarSesion() {
+        user = null
     }
 
     Scaffold(
@@ -115,6 +137,7 @@ fun AppNavigation() {
                     onRegistroClick = { navController.navigate(LoginRoutes.REGISTRO) },
                     onLoginSuccess = {usuario ->
                         user = usuario
+                        tarjetas = tarjetaRepository.obtenerTarjetasUsuario(user?.id?:0).toMutableStateList()
                         navController.navigate(Routes.HOME.ruta) {
                             popUpTo(LoginRoutes.INICIO_SESION) { inclusive = true }
                         }
@@ -125,14 +148,20 @@ fun AppNavigation() {
             composable(LoginRoutes.REGISTRO) {
                 RegistroScreen(
                     onBackClick = { navController.popBackStack() },
-                    onPreguntasClick = { navController.navigate(LoginRoutes.PREGUNTAS) }
+                    onPreguntasClick = { usuario ->
+                        user = usuario
+                        navController.navigate(LoginRoutes.PREGUNTAS) }
                 )
             }
 
             composable(LoginRoutes.PREGUNTAS) {
                 PreguntasScreen(
                     preguntas = AppContainer.preguntasRepository.obtenerPreguntas(),
-                    onLocationClick = { navController.navigate(LoginRoutes.LOCATION) }
+                    user = user,
+                    onLocationClick = { usuario ->
+                        user = usuario
+                        navController.navigate(LoginRoutes.LOCATION)
+                    }
                 )
             }
 
@@ -162,6 +191,11 @@ fun AppNavigation() {
                             AppContainer.cartRepository.addProductos(it)
                         }
                     },
+                    onPerfilClick = {
+                        navController.navigate(Routes.PERFIL.ruta) {
+                            popUpTo(Routes.HOME.ruta) { inclusive = true }
+                        }
+                    },
                     user = user
                 )
             }
@@ -180,7 +214,11 @@ fun AppNavigation() {
 
             composable(Routes.PERFIL.ruta) {
                 PerfilScreen(
-                    onPerfilClick = {},
+                    onCerrarSesion = {
+                        cerrarSesion()
+
+                        navController.navigate(LoginRoutes.INICIO_SESION)
+                    },
                     navController = navController,
                     user = user)
             }
@@ -207,14 +245,38 @@ fun AppNavigation() {
             }
 
             composable(PerfilRoutes.editarPerfil) {
-                EditarPerfilScreen()
+                EditarPerfilScreen(
+                    onUpdateClick = { usuarioActualizado ->
+                        updateUser(usuarioActualizado)
+                        navController.popBackStack()},
+                    user = user?: User(0, "", "", "", 0, mutableListOf<Preferencia>())
+                )
             }
 
             composable(PerfilRoutes.editarTarjeta) {
-                EditarTarjetaScreen()
+                user?.let { usuario ->
+                    EditarTarjetaScreen(
+                        user = usuario,
+                        repository = tarjetaRepository
+                    )
+                }
             }
             composable(PerfilRoutes.historial) {
                 HistorialScreen()
+            }
+
+            composable(PerfilRoutes.editarPreferencias) {
+                user?.let { usuario ->
+                    PreferenciasScreen(
+                        user = usuario,
+                        preguntas = AppContainer.preguntasRepository.obtenerPreguntas(),
+                        onUpdateClick = { usuarioActualizado ->
+                            AppContainer.authRepository.updateUser(usuarioActualizado)
+                            user = usuarioActualizado
+                            navController.popBackStack()
+                        }
+                    )
+                }
             }
         }
     }

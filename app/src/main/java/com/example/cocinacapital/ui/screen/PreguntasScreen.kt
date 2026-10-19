@@ -1,9 +1,5 @@
 package com.example.cocinacapital.ui.screen
 
-/* TO DO
-* 1. PERMITIR CAMBIAR DE OPCION AL HABER SELECCIONADO AL MENOS (2, 3 OPCIONES)
-* */
-
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -37,13 +33,27 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import com.example.cocinacapital.data.model.Preferencia
 import com.example.cocinacapital.data.model.Pregunta
+import com.example.cocinacapital.data.model.User
 
 @Composable
 fun PreguntasScreen(
+    user: User?,
     preguntas: List<Pregunta>,
-    onLocationClick: () -> Unit
+    onLocationClick: (User?) -> Unit
 ) {
+    val preferenciasSeleccionadas = remember {
+        mutableStateListOf<Preferencia>()
+    }
+
+    val respuestas = remember {
+        preguntas.map {
+            mutableStateListOf<Boolean>().apply {
+                addAll(List(it.options.size) { false })
+            }
+        }
+    }
 
     var indiceActual by remember {
         mutableIntStateOf(0)
@@ -63,11 +73,7 @@ fun PreguntasScreen(
                 style = MaterialTheme.typography.titleLarge
             )
 
-            val selectedOptions = remember(pregunta) {
-                mutableStateListOf<Boolean>().apply {
-                    addAll(List(pregunta.options.size) { false })
-                }
-            }
+            val selectedOptions = respuestas[indiceActual]
 
             val options = pregunta.options
 
@@ -168,9 +174,30 @@ fun PreguntasScreen(
                         Text("Siguiente")
                     }
                 } else {
-                    Button (
-                        onClick = onLocationClick,
-                        enabled = true
+                    Button(
+                        onClick = {
+                            val nuevasPreferencias = preguntas.mapIndexed { index, pregunta ->
+
+                                val opcionesSeleccionadas = pregunta.options
+                                    .filterIndexed { opcionIndex, _ ->
+                                        respuestas[index][opcionIndex]
+                                    }
+                                    .map { it.answer }
+                                    .toMutableList()
+
+                                Preferencia(
+                                    tipoPreferencia = pregunta.tipoPreferencia,
+                                    listaPreferencia = opcionesSeleccionadas
+                                )
+                            }
+
+                            user?.let { usuario ->
+                                usuario.preferencias.clear()
+                                usuario.preferencias.addAll(nuevasPreferencias)
+                            }
+
+                            onLocationClick(user)
+                        }
                     ) {
                         Text("Guardar y continuar")
                     }

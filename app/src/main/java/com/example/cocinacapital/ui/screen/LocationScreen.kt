@@ -21,6 +21,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import com.example.cocinacapital.data.model.User
 import com.example.cocinacapital.ui.components.LocationManager
 
 @Composable

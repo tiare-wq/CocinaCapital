@@ -4,7 +4,8 @@ data class Pregunta(
     val id: Int,
     val statement: String,
     val options: List<Option>,
-    val withImages: Boolean
+    val withImages: Boolean,
+    val tipoPreferencia: TipoPreferencia
 )
 
 data class Option (

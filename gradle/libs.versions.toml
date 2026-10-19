@@ -12,6 +12,7 @@ composeBom = "2026.02.01"
 navigationCompose = "2.10.1"
 material = "1.12.0"
 playServicesLocation = "21.4.0"
+kotlinx-datetime = "0.8.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -50,6 +51,9 @@ play-services-location = { group = "com.google.android.gms", name = "play-servic
 
 # Google Material Components (Views)
 google-material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+
+# Datetime
+kotlinx-datetime = { group = "org.jetbrains.kotlinx", name="kotlinx-datetime", version.ref= "kotlinx-datetime" }
 
 # Testing
 androidx-compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
