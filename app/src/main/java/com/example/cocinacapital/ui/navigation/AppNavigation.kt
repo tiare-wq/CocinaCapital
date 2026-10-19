@@ -1,6 +1,7 @@
 package com.example.cocinacapital.ui.navigation
 
 import androidx.compose.foundation.background
+import com.example.cocinacapital.ui.screen.PromocionScreen
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.Icon
@@ -208,7 +209,7 @@ fun AppNavigation() {
                     },
                     onCartClick = { navController.navigate(Routes.CART.ruta) },
                     onPromocionClick = { promocionId ->
-                        // Próximo paso: navegar al detalle de esta promoción
+                        navController.navigate("promocion/$promocionId")
                     },
                     onProductoClick = { productId ->
                         AppContainer.productoRepository.findProductById(productId)?.let {
@@ -223,6 +224,29 @@ fun AppNavigation() {
                     user = user
                 )
             }
+
+
+            composable("promocion/{promocionId}") { backStackEntry ->
+                val promocionId = backStackEntry.arguments
+                    ?.getString("promocionId")
+                    ?.toIntOrNull()
+                val promocion = promocionRepository
+                    .getPromociones()
+                    .find { it.id == promocionId }
+                if (promocion != null) {
+                    PromocionScreen(
+                        promocion = promocion,
+                        onVolver = {
+                            navController.popBackStack()
+                        },
+                        onCanjear = { promocionSeleccionada ->
+                            // Próximo paso:
+                            // Guardar en Mis Tickets
+                        }
+                    )
+                }
+            }
+
 
             // Rutas de explorar productos
             composable(Routes.EXPLORAR.ruta) {
