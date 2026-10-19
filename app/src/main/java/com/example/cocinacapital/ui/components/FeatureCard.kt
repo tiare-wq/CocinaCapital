@@ -21,9 +21,11 @@ import com.example.cocinacapital.data.model.Promocion
 
 @Composable
 fun FeatureCard(
-    promocion: Promocion
+    promocion: Promocion,
+    onClick: () -> Unit = {}
 ) {
     Card(
+        onClick = onClick,
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp),
