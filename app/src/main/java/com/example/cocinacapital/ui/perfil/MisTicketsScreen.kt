@@ -15,15 +15,31 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.cocinacapital.data.model.Promocion
 import com.example.cocinacapital.ui.components.CocinaLayout
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.ui.Alignment
 
 @Composable
 fun MisTicketsScreen(
-    tickets: List<Promocion>
+    tickets: List<Promocion>,
+    onVolver: () -> Unit
 ) {
     CocinaLayout(
         title = "Mis Tickets",
         subtitle = "Aquí encontrarás tus promociones canjeadas."
     ) {
+
+        IconButton(
+            onClick = onVolver
+        ) {
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                contentDescription = "Volver",
+                tint = Color(0xFF1762B8)
+            )
+        }
+
+        Spacer(modifier = Modifier.height(12.dp))
 
         if (tickets.isEmpty()) {
 

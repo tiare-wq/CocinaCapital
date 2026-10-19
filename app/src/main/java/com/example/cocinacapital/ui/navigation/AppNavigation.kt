@@ -354,7 +354,10 @@ fun AppNavigation() {
                 MisTicketsScreen(
                     tickets = ticketsRepository.obtenerTickets(
                         usuarioId = user?.id ?: 0
-                    )
+                    ),
+                    onVolver = {
+                        navController.popBackStack()
+                    }
                 )
             }
 
