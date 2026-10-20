@@ -17,6 +17,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.cocinacapital.data.AppContainer
 import com.example.cocinacapital.data.model.Promocion
 
 @Composable
@@ -24,6 +25,8 @@ fun FeatureCard(
     promocion: Promocion,
     onClick: () -> Unit = {}
 ) {
+    val sucursalRepository = AppContainer.sucursalRepository
+
     Card(
         onClick = onClick,
         modifier = Modifier
@@ -51,7 +54,7 @@ fun FeatureCard(
             ) {
 
                 Text(
-                    text = promocion.local.nombre,
+                    text = sucursalRepository.getRestauranteById(promocion.local.restauranteId)?.nombre?:"Nombre no registrado",
                     style = MaterialTheme.typography.labelLarge
                 )
 

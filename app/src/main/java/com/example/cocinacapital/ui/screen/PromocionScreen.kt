@@ -20,6 +20,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.cocinacapital.data.AppContainer
 import com.example.cocinacapital.data.model.Promocion
 
 private val AzulCapital = Color(0xFF1762B8)
@@ -33,6 +34,9 @@ fun PromocionScreen(
     onVolver: () -> Unit,
     onCanjear: (Promocion) -> Unit
 ) {
+
+    val sucursalRepository = AppContainer.sucursalRepository
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -98,9 +102,9 @@ fun PromocionScreen(
                 Column(
                     modifier = Modifier.padding(20.dp)
                 ) {
-
+                    val restaurante = sucursalRepository.getRestauranteById(promocion.local.restauranteId)
                     Text(
-                        text = promocion.local.nombre,
+                        text = restaurante?.nombre?:"Nombre no registrado",
                         fontSize = 14.sp,
                         color = AzulCapital,
                         fontWeight = FontWeight.SemiBold

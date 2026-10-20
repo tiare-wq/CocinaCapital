@@ -18,6 +18,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.cocinacapital.data.AppContainer
+import com.example.cocinacapital.data.AppContainer.sucursalRepository
 import com.example.cocinacapital.data.model.Local
 import com.example.cocinacapital.data.model.Ubicacion
 import com.example.cocinacapital.data.repository.UbicacionRepository
@@ -33,6 +35,9 @@ fun MapasScreen(
     locales: List<Local>,
     onLocalClick: (Local) -> Unit = {}
 ) {
+
+    val sucursalRepository = AppContainer.sucursalRepository
+
     // Observar la ubicación activa
     val ubicacion by UbicacionRepository.ubicacionActual
         .collectAsState()
@@ -220,8 +225,9 @@ private fun LocalCercanoCard(
             Column(
                 modifier = Modifier.weight(1f)
             ) {
+                val restaurante = sucursalRepository.getRestauranteById(local.restauranteId)
                 Text(
-                    text = local.nombre,
+                    text = restaurante?.nombre?:"Nombre no registrado",
                     fontSize = 15.sp,
                     fontWeight = FontWeight.Bold,
                     color = TextoMapa
@@ -230,7 +236,7 @@ private fun LocalCercanoCard(
                 Spacer(Modifier.height(5.dp))
 
                 Text(
-                    text = local.especialidades.joinToString(" · "),
+                    text = (restaurante?.categorias?:emptyList<String>()).joinToString(" · "),
                     fontSize = 11.sp,
                     color = GrisMapa,
                     maxLines = 2

@@ -14,9 +14,3 @@ data class Preferencia (
     val tipoPreferencia: TipoPreferencia,
     val listaPreferencia: MutableList<String>
 )
-
-enum class TipoPreferencia {
-    OPCIONES_COMIDA,
-    OPCIONES_PRECIOS,
-    OPCIONES_PLANES
-}

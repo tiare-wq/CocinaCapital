@@ -24,7 +24,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.cocinacapital.data.AppContainer
 import com.example.cocinacapital.data.model.*
+import kotlin.math.sin
 
 private val AzulCapital = Color(0xFF1762B8)
 private val FondoCapital = Color(0xFFF8FBFE)
@@ -40,6 +42,8 @@ fun LocalScreen(
     onVolver: () -> Unit,
     onPromocionClick: (Promocion) -> Unit = {}
 ) {
+
+    val sucursalRepository = AppContainer.sucursalRepository
 
     // Obtener promociones pertenecientes al local.
     // Las activas aparecen primero.
@@ -64,6 +68,7 @@ fun LocalScreen(
                     .background(Color(0xFFE3F2FC))
                     .padding(22.dp)
             ) {
+                val restaurante = sucursalRepository.getRestauranteById(local.id)
 
                 IconButton(
                     onClick = onVolver,
@@ -79,7 +84,7 @@ fun LocalScreen(
                 Spacer(Modifier.height(15.dp))
 
                 Text(
-                    text = local.nombre,
+                    text = restaurante?.nombre?:"Nombre no registrado",
                     fontSize = 27.sp,
                     fontWeight = FontWeight.ExtraBold,
                     color = TextoCapital
@@ -88,7 +93,7 @@ fun LocalScreen(
                 Spacer(Modifier.height(10.dp))
 
                 Text(
-                    text = local.descripcion,
+                    text = restaurante?.descripcion?:"Sin descripción",
                     fontSize = 14.sp,
                     color = TextoSecundario,
                     lineHeight = 21.sp
@@ -123,13 +128,13 @@ fun LocalScreen(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    local.especialidades.forEach { especialidad ->
+                    (restaurante?.categorias?:emptyList()).forEach { categoria ->
                         Surface(
                             shape = RoundedCornerShape(20.dp),
                             color = Color.White
                         ) {
                             Text(
-                                text = especialidad,
+                                text = categoria.titulo,
                                 modifier = Modifier.padding(
                                     horizontal = 12.dp,
                                     vertical = 7.dp

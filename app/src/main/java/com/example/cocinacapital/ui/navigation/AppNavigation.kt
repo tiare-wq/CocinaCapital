@@ -34,7 +34,7 @@ import com.example.cocinacapital.data.model.Preferencia
 import com.example.cocinacapital.data.model.Producto
 import com.example.cocinacapital.data.model.Tarjeta
 import com.example.cocinacapital.data.model.User
-import com.example.cocinacapital.data.repository.LocalRepository
+import com.example.cocinacapital.data.repository.SucursalRepository
 import com.example.cocinacapital.data.repository.ProductoRepository
 import com.example.cocinacapital.data.repository.PromocionesRepository
 import com.example.cocinacapital.data.repository.TarjetaRepository
@@ -45,14 +45,14 @@ import com.example.cocinacapital.ui.perfil.EditarTarjetaScreen
 import com.example.cocinacapital.ui.perfil.HistorialScreen
 import com.example.cocinacapital.ui.perfil.MisTicketsScreen
 import com.example.cocinacapital.ui.perfil.PreferenciasScreen
-import com.example.cocinacapital.ui.screen.BusquedaScreen
+import com.example.cocinacapital.ui.explorar.ExplorarScreen
 import com.example.cocinacapital.ui.screen.CartScreen
 import com.example.cocinacapital.ui.screen.FavoritosScreen
 import com.example.cocinacapital.ui.screen.LocalScreen
 import com.example.cocinacapital.ui.screen.LocationScreen
 import com.example.cocinacapital.ui.screen.LoginScreen
 import com.example.cocinacapital.ui.screen.MapasScreen
-import com.example.cocinacapital.ui.screen.PerfilScreen
+import com.example.cocinacapital.ui.perfil.PerfilScreen
 import com.example.cocinacapital.ui.screen.PreguntasScreen
 import com.example.cocinacapital.ui.screen.RegistroScreen
 
@@ -77,7 +77,7 @@ fun AppNavigation() {
         ProductoRepository()
     }
 
-    val localRepository = remember { LocalRepository() }
+    val sucursalRepository = remember { SucursalRepository() }
 
     val promocionRepository = remember { PromocionesRepository() }
     val ticketsRepository = remember { TicketsRepository() }
@@ -256,21 +256,43 @@ fun AppNavigation() {
                 }
             }
 
-
             // Rutas de explorar productos
             composable(Routes.EXPLORAR.ruta) {
-                BusquedaScreen(
-                    locales = localRepository.getAll(),
-                    promociones = promocionRepository.getPromociones(),
+
+                val locales = remember {
+                    sucursalRepository.getAll()
+                }
+
+                val promociones = remember {
+                    promocionRepository.getPromociones()
+                }
+
+                val restaurantesPorId = remember(locales, promociones) {
+                    val idsRestaurantes = (
+                            locales.map { it.restauranteId } +
+                                    promociones.map { it.local.restauranteId }
+                            ).distinct()
+
+                    idsRestaurantes.mapNotNull { id ->
+                        sucursalRepository.getRestauranteById(id)?.let { restaurante ->
+                            id to restaurante
+                        }
+                    }.toMap()
+                }
+
+                ExplorarScreen(
+                    locales = locales,
+                    promociones = promociones,
+                    restaurantesPorId = restaurantesPorId,
                     favoritos = favoritos,
                     onToggleFavorito = { id ->
-                        // Tu lógica actual para agregar o quitar productos favoritos
+                        // Tu lógica actual para agregar o quitar favoritos.
                     },
                     onLocalClick = { local ->
                         navController.navigate("local/${local.id}")
                     },
                     onPromocionClick = { promocion ->
-                        // Navegar al detalle de la promoción si tienes esa pantalla
+                        navController.navigate("promocion/${promocion.id}")
                     }
                 )
             }
@@ -282,7 +304,7 @@ fun AppNavigation() {
                     ?.toIntOrNull()
 
                 val local = localId?.let {
-                    localRepository.getById(it)
+                    sucursalRepository.getById(it)
                 }
 
                 if (local != null) {
@@ -302,7 +324,7 @@ fun AppNavigation() {
 
             composable(Routes.MAPA.ruta) {
                 MapasScreen(
-                    locales = localRepository.getAll(),
+                    locales = sucursalRepository.getAll(),
                     onLocalClick = { local ->
                         navController.navigate("local/${local.id}")
                     },
