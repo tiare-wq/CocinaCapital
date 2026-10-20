@@ -29,6 +29,7 @@ import com.example.cocinacapital.ui.home.HomeRoute
 import com.example.cocinacapital.ui.home.HomeViewModel
 import com.example.cocinacapital.ui.explorar.ExplorarScreen
 import com.example.cocinacapital.ui.perfil.*
+import com.example.cocinacapital.ui.promocion.PromocionScreen
 import com.example.cocinacapital.ui.screen.*
 
 @OptIn(kotlin.time.ExperimentalTime::class)
