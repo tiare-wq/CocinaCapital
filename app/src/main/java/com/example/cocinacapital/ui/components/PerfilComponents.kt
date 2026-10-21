@@ -39,7 +39,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.cocinacapital.data.model.Tarjeta
-import kotlinx.datetime.LocalDate
 
 @Composable
 fun BtnOption(

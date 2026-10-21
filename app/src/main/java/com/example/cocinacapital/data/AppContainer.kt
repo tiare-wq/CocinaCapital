@@ -5,11 +5,16 @@ import com.example.cocinacapital.data.repository.CartRepository
 import com.example.cocinacapital.data.repository.PreguntasRepository
 import com.example.cocinacapital.data.repository.ProductoRepository
 import com.example.cocinacapital.data.repository.PromocionesRepository
+import com.example.cocinacapital.data.repository.SucursalRepository
+import com.example.cocinacapital.data.repository.TarjetaRepository
+import com.example.cocinacapital.data.repository.UbicacionRepository
 
 object AppContainer {
-    val productoRepository = ProductoRepository()
-    val cartRepository = CartRepository()
     val authRepository = AuthRepository()
-    val promocionesRepository = PromocionesRepository()
+    val cartRepository = CartRepository()
     val preguntasRepository = PreguntasRepository()
+    val productoRepository = ProductoRepository()
+    val promocionesRepository = PromocionesRepository()
+    val sucursalRepository = SucursalRepository()
+    val ubicacionRepository = UbicacionRepository
 }

@@ -18,12 +18,14 @@ import com.example.cocinacapital.ui.components.CocinaLayout
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.ui.Alignment
+import com.example.cocinacapital.data.AppContainer
 
 @Composable
 fun MisTicketsScreen(
     tickets: List<Promocion>,
     onVolver: () -> Unit
 ) {
+    val sucursalRepository = AppContainer.sucursalRepository
     CocinaLayout(
         title = "Mis Tickets",
         subtitle = "Aquí encontrarás tus promociones canjeadas."
@@ -78,6 +80,7 @@ fun MisTicketsScreen(
                         Column(
                             modifier = Modifier.padding(16.dp)
                         ) {
+                            val restaurante = sucursalRepository.getRestauranteById(promocion.local.id)
 
                             Text(
                                 text = promocion.titulo,
@@ -88,7 +91,7 @@ fun MisTicketsScreen(
                             Spacer(Modifier.height(8.dp))
 
                             Text(
-                                text = promocion.local.nombre,
+                                text = restaurante?.nombre?:"Nombre no registrado",
                                 fontSize = 14.sp,
                                 color = Color.Gray
                             )

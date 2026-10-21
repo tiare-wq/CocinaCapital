@@ -1,7 +1,6 @@
-package com.example.cocinacapital.ui.screen
+package com.example.cocinacapital.ui.perfil
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.gestures.snapping.SnapPosition
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -23,7 +22,6 @@ import com.example.cocinacapital.R
 import com.example.cocinacapital.data.model.User
 import com.example.cocinacapital.ui.components.BtnOption
 import com.example.cocinacapital.ui.components.CocinaLayout
-import org.intellij.lang.annotations.JdkConstants
 
 @Composable
 fun PerfilScreen(

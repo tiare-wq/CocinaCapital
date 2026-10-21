@@ -1,6 +1,10 @@
 
-package com.example.cocinacapital.ui.screen
+package com.example.cocinacapital.ui.promocion
 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.cocinacapital.data.model.Promocion
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -11,32 +15,47 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.cocinacapital.data.model.Promocion
-
-private val AzulCapital = Color(0xFF1762B8)
-private val FondoCapital = Color(0xFFF8FBFE)
-private val TextoCapital = Color(0xFF1D3850)
-private val TextoSecundario = Color(0xFF71869A)
+import com.example.cocinacapital.ui.theme.AppColors
 
 @Composable
 fun PromocionScreen(
     promocion: Promocion,
     onVolver: () -> Unit,
+    onCanjear: (Promocion) -> Unit,
+    promocionViewModel: PromocionViewModel = viewModel()
+) {
+
+    LaunchedEffect(promocion) {
+        promocionViewModel.cargarRestaurante(promocion)
+    }
+
+    PromocionUI(
+        promocion = promocion,
+        nombreRestaurante = promocionViewModel.nombreRestaurante,
+        onVolver = onVolver,
+        onCanjear = onCanjear
+    )
+}
+
+@Composable
+fun PromocionUI(
+    promocion: Promocion,
+    nombreRestaurante: String,
+    onVolver: () -> Unit,
     onCanjear: (Promocion) -> Unit
 ) {
+
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(FondoCapital)
+            .background(AppColors.Background)
             .verticalScroll(rememberScrollState())
     ) {
 
@@ -44,14 +63,15 @@ fun PromocionScreen(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(Color(0xFFE3F2FC))
+                .background(AppColors.SurfaceBlue)
                 .padding(22.dp)
         ) {
+
             IconButton(onClick = onVolver) {
                 Icon(
                     imageVector = Icons.Outlined.ArrowBack,
                     contentDescription = "Volver",
-                    tint = TextoCapital
+                    tint = AppColors.TextPrimary
                 )
             }
 
@@ -61,7 +81,7 @@ fun PromocionScreen(
                 text = "Detalle de promoción",
                 fontSize = 27.sp,
                 fontWeight = FontWeight.ExtraBold,
-                color = TextoCapital
+                color = AppColors.TextPrimary
             )
 
             Spacer(Modifier.height(8.dp))
@@ -69,7 +89,7 @@ fun PromocionScreen(
             Text(
                 text = "Descubre los beneficios disponibles",
                 fontSize = 14.sp,
-                color = TextoSecundario
+                color = AppColors.TextSecondary
             )
         }
 
@@ -80,10 +100,11 @@ fun PromocionScreen(
                 .padding(22.dp),
             shape = RoundedCornerShape(16.dp),
             colors = CardDefaults.cardColors(
-                containerColor = Color.White
+                containerColor = AppColors.Surface
             ),
             elevation = CardDefaults.cardElevation(4.dp)
         ) {
+
             Column {
 
                 Image(
@@ -99,29 +120,32 @@ fun PromocionScreen(
                     modifier = Modifier.padding(20.dp)
                 ) {
 
+                    // RESTAURANTE
                     Text(
-                        text = promocion.local.nombre,
+                        text = nombreRestaurante,
                         fontSize = 14.sp,
-                        color = AzulCapital,
+                        color = AppColors.Primary,
                         fontWeight = FontWeight.SemiBold
                     )
 
                     Spacer(Modifier.height(8.dp))
 
+                    // TITULO
                     Text(
                         text = promocion.titulo,
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Bold,
-                        color = TextoCapital
+                        color = AppColors.TextPrimary
                     )
 
                     Spacer(Modifier.height(16.dp))
 
+                    // DESCRIPCION
                     Text(
                         text = "Descripción",
                         fontSize = 17.sp,
                         fontWeight = FontWeight.Bold,
-                        color = TextoCapital
+                        color = AppColors.TextPrimary
                     )
 
                     Spacer(Modifier.height(8.dp))
@@ -129,28 +153,31 @@ fun PromocionScreen(
                     Text(
                         text = promocion.descripcion,
                         fontSize = 14.sp,
-                        color = TextoSecundario,
+                        color = AppColors.TextSecondary,
                         lineHeight = 22.sp
                     )
 
                     Spacer(Modifier.height(20.dp))
 
+                    // DESCUENTO
                     Text(
                         text = "${promocion.descuento}% de descuento",
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
-                        color = AzulCapital
+                        color = AppColors.Primary
                     )
 
                     Spacer(Modifier.height(12.dp))
 
+                    // DISTANCIA
                     Row(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
+
                         Icon(
                             imageVector = Icons.Outlined.LocationOn,
                             contentDescription = null,
-                            tint = AzulCapital,
+                            tint = AppColors.Primary,
                             modifier = Modifier.size(20.dp)
                         )
 
@@ -159,12 +186,13 @@ fun PromocionScreen(
                         Text(
                             text = "${promocion.distancia} km de distancia",
                             fontSize = 13.sp,
-                            color = TextoSecundario
+                            color = AppColors.TextSecondary
                         )
                     }
 
                     Spacer(Modifier.height(24.dp))
 
+                    // BOTON DE CANJE
                     Button(
                         onClick = { onCanjear(promocion) },
                         enabled = promocion.activa,
@@ -173,9 +201,12 @@ fun PromocionScreen(
                             .height(52.dp),
                         shape = RoundedCornerShape(12.dp),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = AzulCapital
+                            containerColor = AppColors.Primary,
+                            disabledContainerColor = AppColors.Disabled,
+                            disabledContentColor = AppColors.DisabledText
                         )
                     ) {
+
                         Text(
                             text = if (promocion.activa)
                                 "Canjear promoción"

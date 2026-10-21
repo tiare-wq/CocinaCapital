@@ -5,7 +5,7 @@ import com.example.cocinacapital.data.model.Promocion
 
 class PromocionesRepository {
 
-    val localRepository = LocalRepository()
+    val sucursalRepository = SucursalRepository()
     val productoRepository = ProductoRepository()
 
     private val productos = productoRepository.getProductos()
@@ -16,7 +16,7 @@ class PromocionesRepository {
         // LA PICA DE JUAN
         Promocion(
             id = 1,
-            local = requireNotNull(localRepository.getById(1)),
+            local = requireNotNull(sucursalRepository.getById(1)),
             productos = mutableListOf(
                 productos[0],
                 productos[1]
@@ -32,7 +32,7 @@ class PromocionesRepository {
         // PIZZA NAPOLI
         Promocion(
             id = 2,
-            local = requireNotNull(localRepository.getById(2)),
+            local = requireNotNull(sucursalRepository.getById(2)),
             productos = mutableListOf(
                 productos[2],
                 productos[3]
@@ -48,7 +48,7 @@ class PromocionesRepository {
         // SUSHI HOUSE
         Promocion(
             id = 3,
-            local = requireNotNull(localRepository.getById(3)),
+            local = requireNotNull(sucursalRepository.getById(3)),
             productos = mutableListOf(
                 productos[4],
                 productos[5]
@@ -64,7 +64,7 @@ class PromocionesRepository {
         // SABORES DEL PERÚ
         Promocion(
             id = 4,
-            local = requireNotNull(localRepository.getById(4)),
+            local = requireNotNull(sucursalRepository.getById(4)),
             productos = mutableListOf(
                 productos[6],
                 productos[7]
@@ -80,7 +80,7 @@ class PromocionesRepository {
         // CAFÉ CENTRAL
         Promocion(
             id = 5,
-            local = requireNotNull(localRepository.getById(5)),
+            local = requireNotNull(sucursalRepository.getById(5)),
             productos = mutableListOf(
                 productos[8],
                 productos[9]
@@ -95,7 +95,7 @@ class PromocionesRepository {
         // GREEN FOOD
         Promocion(
             id = 6,
-            local = requireNotNull(localRepository.getById(6)),
+            local = requireNotNull(sucursalRepository.getById(6)),
             productos = mutableListOf(
                 productos[10],
                 productos[11]

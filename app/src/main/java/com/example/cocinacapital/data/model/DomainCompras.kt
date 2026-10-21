@@ -1,0 +1,37 @@
+package com.example.cocinacapital.data.model
+
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.todayIn
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
+
+data class Promocion(
+    val id: Int,
+    val local: Local,
+    val productos: MutableList<Producto>,
+    val titulo: String,
+    val descripcion: String,
+    val descuento: Int,
+    val distancia: Double,
+    val imagen: Int,
+    val activa: Boolean
+)
+
+@OptIn(ExperimentalTime::class)
+data class Tarjeta(
+    val nroTarjeta: Long,
+    val usuario: User?,
+    val fechaVencimiento: LocalDate,
+    val prioritaria: Boolean
+) {
+    init {
+        require(nroTarjeta.toString().length == 16) {
+            "La tarjeta debe tener exactamente 16 números"
+        }
+        require(usuario != null && usuario.name.isNotBlank()) {
+            "El usuario no puede ser nulo"
+        }
+        require(fechaVencimiento >= Clock.System.todayIn(TimeZone.currentSystemDefault()))
+    }
+}

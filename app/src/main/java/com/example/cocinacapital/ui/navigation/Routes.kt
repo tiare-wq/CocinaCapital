@@ -49,6 +49,13 @@ enum class Routes(
     )
 }
 
+object LoginRoutes {
+    const val INICIO_SESION = "inicio_sesion"
+    const val REGISTRO = "registro"
+    const val LOCATION = "location"
+    const val PREGUNTAS = "preguntas"
+}
+
 object PerfilRoutes {
     const val tickets = "perfil/tickets"
     const val editarTarjeta = "perfil/editar-tarjeta"

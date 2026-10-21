@@ -19,7 +19,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.cocinacapital.data.model.User
 import com.example.cocinacapital.ui.components.AuthHeader
 import com.example.cocinacapital.ui.components.FeatureCard
-import com.example.cocinacapital.ui.components.ProductoCard
 
 private val Azul = Color(0xFF1460B5)
 private val Fondo = Color(0xFFFBFDFF)
@@ -154,39 +153,6 @@ fun HomeScreen(
                     promocion = promocion,
                     onClick = {
                         onPromocionClick(promocion.id)
-                    }
-                )
-            }
-        }
-
-        // TÍTULO PRODUCTOS
-        item {
-            Text(
-                text = "Productos destacados",
-                fontSize = 22.sp,
-                fontWeight = FontWeight.Bold,
-                color = Texto,
-                modifier = Modifier.padding(
-                    start = 24.dp,
-                    end = 24.dp,
-                    top = 16.dp
-                )
-            )
-        }
-
-        // PRODUCTOS
-        items(
-            uiState.productos,
-            key = { "producto_${it.id}" }
-        ) { producto ->
-
-            Box(
-                modifier = Modifier.padding(horizontal = 24.dp)
-            ) {
-                ProductoCard(
-                    producto = producto,
-                    onClick = {
-                        onProductoClick(producto.id)
                     }
                 )
             }

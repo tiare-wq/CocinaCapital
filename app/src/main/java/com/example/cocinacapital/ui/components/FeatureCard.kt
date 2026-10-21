@@ -1,4 +1,3 @@
-
 package com.example.cocinacapital.ui.components
 
 import androidx.compose.foundation.Image
@@ -18,6 +17,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.cocinacapital.data.AppContainer
 import com.example.cocinacapital.data.model.Promocion
 
 @Composable
@@ -25,6 +25,8 @@ fun FeatureCard(
     promocion: Promocion,
     onClick: () -> Unit = {}
 ) {
+    val sucursalRepository = AppContainer.sucursalRepository
+
     Card(
         onClick = onClick,
         modifier = Modifier
@@ -35,6 +37,7 @@ fun FeatureCard(
             defaultElevation = 4.dp
         )
     ) {
+
         Column {
 
             Image(
@@ -42,7 +45,7 @@ fun FeatureCard(
                 contentDescription = promocion.titulo,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(160.dp),
+                    .height(180.dp),
                 contentScale = ContentScale.Crop
             )
 
@@ -50,29 +53,39 @@ fun FeatureCard(
                 modifier = Modifier.padding(16.dp)
             ) {
 
-                // NOMBRE DEL RESTAURANTE
                 Text(
-                    text = promocion.local.nombre,
-                    style = MaterialTheme.typography.labelLarge,
-                    color = MaterialTheme.colorScheme.primary
+                    text = sucursalRepository.getRestauranteById(promocion.local.restauranteId)?.nombre?:"Nombre no registrado",
+                    style = MaterialTheme.typography.labelLarge
                 )
 
-                Spacer(Modifier.height(6.dp))
-
-                // TÍTULO DE LA PROMOCIÓN
                 Text(
                     text = promocion.titulo,
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold
                 )
 
-                Spacer(Modifier.height(10.dp))
+                Spacer(
+                    modifier = Modifier.height(4.dp)
+                )
 
-                // PORCENTAJE DE DESCUENTO
+                Text(
+                    text = promocion.descripcion,
+                    style = MaterialTheme.typography.bodyMedium
+                )
+
+                Spacer(
+                    modifier = Modifier.height(8.dp)
+                )
+
                 Text(
                     text = "${promocion.descuento}% de descuento",
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.primary
+                )
+
+                Text(
+                    text = "${promocion.distancia} km de distancia",
+                    style = MaterialTheme.typography.bodySmall
                 )
             }
         }

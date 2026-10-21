@@ -16,7 +16,15 @@ class AuthRepository {
         val user: User? = getUsuarioByEmail(email)
         if ( user != null && user.password == password ) {
             val id = usuarios.size + 1
-            return User(id, user.email, user.name, user.password, user.foto, user.preferencias, user.latitud, user.longitud)
+            return User(
+                id,
+                user.email,
+                user.name,
+                user.password,
+                user.foto,
+                user.preferencias,
+                user.latitud,
+                user.longitud)
         }
         return null
     }
