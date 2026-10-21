@@ -1,3 +1,4 @@
+
 package com.example.cocinacapital.ui.components
 
 import androidx.compose.foundation.Image
@@ -34,7 +35,6 @@ fun FeatureCard(
             defaultElevation = 4.dp
         )
     ) {
-
         Column {
 
             Image(
@@ -42,7 +42,7 @@ fun FeatureCard(
                 contentDescription = promocion.titulo,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(180.dp),
+                    .height(160.dp),
                 contentScale = ContentScale.Crop
             )
 
@@ -50,39 +50,29 @@ fun FeatureCard(
                 modifier = Modifier.padding(16.dp)
             ) {
 
+                // NOMBRE DEL RESTAURANTE
                 Text(
                     text = promocion.local.nombre,
-                    style = MaterialTheme.typography.labelLarge
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.primary
                 )
 
+                Spacer(Modifier.height(6.dp))
+
+                // TÍTULO DE LA PROMOCIÓN
                 Text(
                     text = promocion.titulo,
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold
                 )
 
-                Spacer(
-                    modifier = Modifier.height(4.dp)
-                )
+                Spacer(Modifier.height(10.dp))
 
-                Text(
-                    text = promocion.descripcion,
-                    style = MaterialTheme.typography.bodyMedium
-                )
-
-                Spacer(
-                    modifier = Modifier.height(8.dp)
-                )
-
+                // PORCENTAJE DE DESCUENTO
                 Text(
                     text = "${promocion.descuento}% de descuento",
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.primary
-                )
-
-                Text(
-                    text = "${promocion.distancia} km de distancia",
-                    style = MaterialTheme.typography.bodySmall
                 )
             }
         }
