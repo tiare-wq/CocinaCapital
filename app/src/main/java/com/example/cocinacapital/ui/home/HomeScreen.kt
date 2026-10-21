@@ -16,9 +16,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.cocinacapital.data.model.User
+import com.example.cocinacapital.data.AppContainer
+import com.example.cocinacapital.data.model.TipoPreferencia
 import com.example.cocinacapital.ui.components.AuthHeader
 import com.example.cocinacapital.ui.components.FeatureCard
+import com.example.cocinacapital.ui.viewmodel.UserUiState
+import com.example.cocinacapital.ui.viewmodel.UserViewModel
 
 private val Azul = Color(0xFF1460B5)
 private val Fondo = Color(0xFFFBFDFF)
@@ -29,39 +32,72 @@ private val Secundario = Color(0xFF5F7383)
 @Composable
 fun HomeRoute(
     viewModel: HomeViewModel,
+    userViewModel: UserViewModel,
     onExplorarClick: () -> Unit,
     onLoginClick: () -> Unit,
     onCartClick: () -> Unit,
-    onProductoClick: (Int) -> Unit,
-    onPromocionClick: (Int) -> Unit,
-    onPerfilClick: () -> Unit,
-    user: User?
+    onPromocionClick: (Int) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val userUiState by userViewModel.uiState.collectAsStateWithLifecycle()
 
     HomeScreen(
         uiState = uiState,
+        userUiState = userUiState,
         onExplorarClick = onExplorarClick,
         onLoginClick = onLoginClick,
         onCartClick = onCartClick,
-        onProductoClick = onProductoClick,
-        onPromocionClick = onPromocionClick,
-        onPerfilClick = onPerfilClick,
-        cliente = user
+        onPromocionClick = onPromocionClick
     )
 }
 
 @Composable
 fun HomeScreen(
     uiState: HomeUiState,
+    userUiState: UserUiState,
     onExplorarClick: () -> Unit,
     onLoginClick: () -> Unit,
     onCartClick: () -> Unit,
-    onProductoClick: (Int) -> Unit,
-    onPromocionClick: (Int) -> Unit,
-    onPerfilClick: () -> Unit,
-    cliente: User?
+    onPromocionClick: (Int) -> Unit
 ) {
+
+    val cliente = userUiState.user
+
+    // Obtener las preferencias gastronómicas del usuario
+    val preferenciasComida = cliente
+        ?.preferencias
+        ?.firstOrNull {
+            it.tipoPreferencia == TipoPreferencia.OPCIONES_COMIDA
+        }
+        ?.listaPreferencia
+        .orEmpty()
+
+    // Ordenar promociones según las preferencias
+    val promocionesOrdenadas = if (preferenciasComida.isEmpty()) {
+        uiState.promociones
+    } else {
+        uiState.promociones.sortedBy { promocion ->
+
+            // Obtener el restaurante asociado al local de la promoción
+            val restaurante = AppContainer.sucursalRepository
+                .getRestauranteById(promocion.local.restauranteId)
+
+            // Buscar la posición de la categoría en las preferencias
+            val posicionPreferencia = restaurante
+                ?.categorias
+                ?.map { it.titulo }
+                ?.mapNotNull { categoria ->
+                    preferenciasComida.indexOf(categoria)
+                        .takeIf { it >= 0 }
+                }
+                ?.minOrNull()
+
+            // Las promociones sin coincidencias quedan al final
+            posicionPreferencia ?: Int.MAX_VALUE
+        }
+    }
+
+    // Estado de carga
     if (uiState.isLoading) {
         Box(
             modifier = Modifier
@@ -82,7 +118,7 @@ fun HomeScreen(
         contentPadding = PaddingValues(bottom = 32.dp)
     ) {
 
-        // ENCABEZADO DEL LOGIN
+        // ENCABEZADO
         item {
             AuthHeader()
         }
@@ -140,9 +176,9 @@ fun HomeScreen(
             )
         }
 
-        // TARJETAS DE PROMOCIONES
+        // PROMOCIONES ORDENADAS
         items(
-            uiState.promociones,
+            promocionesOrdenadas,
             key = { "promo_${it.id}" }
         ) { promocion ->
 
@@ -176,7 +212,6 @@ fun HeroSection(
         Column(
             modifier = Modifier.padding(22.dp)
         ) {
-
             Text(
                 text = "COCINA CAPITAL",
                 fontSize = 22.sp,
@@ -210,7 +245,6 @@ fun HeroSection(
             Row(
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-
                 OutlinedButton(
                     onClick = onCartClick,
                     modifier = Modifier.weight(1f),

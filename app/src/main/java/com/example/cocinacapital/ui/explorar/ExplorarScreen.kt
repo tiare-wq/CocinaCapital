@@ -40,9 +40,6 @@ import java.util.Locale
 
 @Composable
 fun ExplorarScreen(
-    locales: List<Local>,
-    promociones: List<Promocion>,
-    restaurantesPorId: Map<Int, Restaurante>,
     favoritos: Set<Int>,
     onToggleFavorito: (Int) -> Unit,
     onLocalClick: (Local) -> Unit,
@@ -50,6 +47,10 @@ fun ExplorarScreen(
     viewModel: ExplorarViewModel = viewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    val locales = uiState.locales
+    val promociones = uiState.promociones
+    val restaurantesPorId = uiState.restaurantesPorId
 
     // Filtrar locales según búsqueda y categoría seleccionada.
     val localesFiltrados = remember(

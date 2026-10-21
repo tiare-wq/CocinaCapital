@@ -1,7 +1,11 @@
 package com.example.cocinacapital.ui.explorar
 
 import androidx.lifecycle.ViewModel
+import com.example.cocinacapital.data.AppContainer
 import com.example.cocinacapital.data.model.CategoriaRestaurante
+import com.example.cocinacapital.data.model.Local
+import com.example.cocinacapital.data.model.Promocion
+import com.example.cocinacapital.data.model.Restaurante
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -10,21 +14,101 @@ import kotlinx.coroutines.flow.update
 data class ExplorarUiState(
     val categorias: List<CategoriaRestaurante> =
         CategoriaRestaurante.entries.toList(),
+
     val busqueda: String = "",
-    val categoriaSeleccionada: CategoriaRestaurante? = null
+
+    val categoriaSeleccionada: CategoriaRestaurante? = null,
+
+    val locales: List<Local> = emptyList(),
+
+    val promociones: List<Promocion> = emptyList(),
+
+    val restaurantesPorId: Map<Int, Restaurante> = emptyMap()
 )
 
 class ExplorarViewModel : ViewModel() {
 
+    private val sucursalRepository = AppContainer.sucursalRepository
+    private val promocionRepository = AppContainer.promocionesRepository
+
     private val _uiState = MutableStateFlow(ExplorarUiState())
     val uiState: StateFlow<ExplorarUiState> = _uiState.asStateFlow()
 
+    init {
+        loadExplorar()
+    }
+
+    // Cargar información inicial
+    private fun loadExplorar() {
+
+        val locales = sucursalRepository.getAll()
+        val promociones = promocionRepository.getPromociones()
+
+        val restaurantes = obtenerRestaurantes(locales, promociones)
+
+        _uiState.update {
+            it.copy(
+                locales = locales,
+                promociones = promociones,
+                restaurantesPorId = restaurantes
+            )
+        }
+    }
+
+    // Obtener restaurantes relacionados con locales y promociones
+    private fun obtenerRestaurantes(
+        locales: List<Local>,
+        promociones: List<Promocion>
+    ): Map<Int, Restaurante> {
+
+        val ids = (
+                locales.map { it.restauranteId } +
+                        promociones.map { it.local.restauranteId }
+                ).distinct()
+
+        return ids.mapNotNull { id ->
+            sucursalRepository
+                .getRestauranteById(id)
+                ?.let { id to it }
+        }.toMap()
+    }
+
+    // Actualizar locales
+    fun actualizarLocales(nuevosLocales: List<Local>) {
+
+        _uiState.update { actual ->
+            actual.copy(
+                locales = nuevosLocales,
+                restaurantesPorId = obtenerRestaurantes(
+                    nuevosLocales,
+                    actual.promociones
+                )
+            )
+        }
+    }
+
+    // Actualizar promociones
+    fun actualizarPromociones(nuevasPromociones: List<Promocion>) {
+
+        _uiState.update { actual ->
+            actual.copy(
+                promociones = nuevasPromociones,
+                restaurantesPorId = obtenerRestaurantes(
+                    actual.locales,
+                    nuevasPromociones
+                )
+            )
+        }
+    }
+
+    // Actualizar búsqueda
     fun actualizarBusqueda(valor: String) {
         _uiState.update {
             it.copy(busqueda = valor)
         }
     }
 
+    // Seleccionar categoría
     fun seleccionarCategoria(categoria: CategoriaRestaurante?) {
         _uiState.update {
             it.copy(categoriaSeleccionada = categoria)

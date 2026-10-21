@@ -5,7 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
@@ -31,6 +30,8 @@ import com.example.cocinacapital.ui.explorar.ExplorarScreen
 import com.example.cocinacapital.ui.perfil.*
 import com.example.cocinacapital.ui.promocion.PromocionScreen
 import com.example.cocinacapital.ui.screen.*
+import com.example.cocinacapital.ui.theme.AppColors
+import com.example.cocinacapital.ui.viewmodel.UserViewModel
 
 @OptIn(kotlin.time.ExperimentalTime::class)
 @Composable
@@ -41,6 +42,8 @@ fun AppNavigation() {
     val currentRoute = navController
         .currentBackStackEntryAsState().value
         ?.destination?.route
+
+    val usuarioViewModel: UserViewModel = viewModel()
 
     // Repositorios
     val productoRepository = remember { ProductoRepository() }
@@ -110,7 +113,7 @@ fun AppNavigation() {
             if (showBottomBar) {
                 NavigationBar(
                     modifier = Modifier.background(
-                        MaterialTheme.colorScheme.surface
+                        AppColors.Sky
                     )
                 ) {
                     bottomItems.forEach { item ->
@@ -145,7 +148,7 @@ fun AppNavigation() {
                                 Text(
                                     text = item.nombre,
                                     color = if (selected)
-                                        MaterialTheme.colorScheme.primary
+                                        AppColors.Primary
                                     else Color.Gray,
                                     fontSize = 14.sp
                                 )
@@ -229,7 +232,7 @@ fun AppNavigation() {
 
                 HomeRoute(
                     viewModel = homeViewModel,
-                    user = user,
+                    userViewModel = usuarioViewModel,
 
                     onExplorarClick = {
                         navController.navigate(Routes.EXPLORAR.ruta)
@@ -249,20 +252,6 @@ fun AppNavigation() {
 
                     onPromocionClick = { id ->
                         navController.navigate("promocion/$id")
-                    },
-
-                    onProductoClick = { id ->
-                        productoRepository.findProductById(id)?.let {
-                            AppContainer.cartRepository.addProductos(it)
-                        }
-                    },
-
-                    onPerfilClick = {
-                        navController.navigate(Routes.PERFIL.ruta) {
-                            popUpTo(Routes.HOME.ruta) {
-                                inclusive = true
-                            }
-                        }
                     }
                 )
             }
@@ -306,39 +295,13 @@ fun AppNavigation() {
             // EXPLORAR
             composable(Routes.EXPLORAR.ruta) {
 
-                val locales = remember {
-                    sucursalRepository.getAll()
-                }
-
-                val promociones = remember {
-                    promocionRepository.getPromociones()
-                }
-
-                val restaurantesPorId = remember(locales, promociones) {
-
-                    val ids = (
-                            locales.map { it.restauranteId } +
-                                    promociones.map { it.local.restauranteId }
-                            ).distinct()
-
-                    ids.mapNotNull { id ->
-                        sucursalRepository
-                            .getRestauranteById(id)
-                            ?.let { id to it }
-                    }.toMap()
-                }
-
                 ExplorarScreen(
-                    locales = locales,
-                    promociones = promociones,
-                    restaurantesPorId = restaurantesPorId,
                     favoritos = favoritos,
                     onToggleFavorito = ::toggleFavorito,
 
                     onLocalClick = { local ->
                         navController.navigate("local/${local.id}")
                     },
-
                     onPromocionClick = { promocion ->
                         navController.navigate("promocion/${promocion.id}")
                     }
