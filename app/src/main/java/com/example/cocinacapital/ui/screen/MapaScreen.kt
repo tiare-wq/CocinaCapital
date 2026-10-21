@@ -24,6 +24,7 @@ import com.example.cocinacapital.data.model.Local
 import com.example.cocinacapital.data.model.Ubicacion
 import com.example.cocinacapital.data.repository.UbicacionRepository
 import java.util.Locale
+import com.example.cocinacapital.ui.components.OpenStreetMapView
 
 private val AzulMapa = Color(0xFF1762B8)
 private val FondoMapa = Color(0xFFF8FBFE)
@@ -78,6 +79,13 @@ fun MapasScreen(
             text = "Descubre restaurantes cerca de ti.",
             fontSize = 14.sp,
             color = GrisMapa
+        )
+
+        Spacer(Modifier.height(16.dp))
+
+        OpenStreetMapView(
+            locales = locales,
+            onLocalClick = onLocalClick
         )
 
         Spacer(Modifier.height(24.dp))
