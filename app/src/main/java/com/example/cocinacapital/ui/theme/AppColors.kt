@@ -30,4 +30,6 @@ object AppColors {
 
     val Inactive = Color(0xFFECEFF1)
     val Favorite = Color(0xFFE53935)
+
+    val Sky = Color(0xFF6089CB)
 }
