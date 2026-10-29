@@ -3,6 +3,7 @@ package com.example.cocinacapital.data.repository
 import com.example.cocinacapital.data.model.CategoriaRestaurante
 import com.example.cocinacapital.data.model.Local
 import com.example.cocinacapital.data.model.Restaurante
+import com.example.cocinacapital.data.model.Ubicacion
 
 class SucursalRepository {
 
@@ -96,7 +97,7 @@ class SucursalRepository {
     )
 
     // Obtener todos los locales
-    fun getAll(): List<Local> {
+    fun getAllLocales(): List<Local> {
         return locales.toList()
     }
 
@@ -172,37 +173,38 @@ class SucursalRepository {
     }
 
     // Calcular distancia mediante fórmula de Haversine
-    private fun calcularDistancia(
-        lat1: Double,
-        lon1: Double,
-        lat2: Double,
-        lon2: Double
+    fun calcularDistancia(
+        origen: Ubicacion,
+        destino: Ubicacion
     ): Double {
 
         val radioTierra = 6371.0
 
-        val diferenciaLatitud = Math.toRadians(lat2 - lat1)
-        val diferenciaLongitud = Math.toRadians(lon2 - lon1)
+        val lat1 = Math.toRadians(origen.latitud)
+        val lat2 = Math.toRadians(destino.latitud)
 
-        val a = Math.sin(diferenciaLatitud / 2).let {
-            it * it
-        } + Math.cos(Math.toRadians(lat1)) *
-                Math.cos(Math.toRadians(lat2)) *
-                Math.sin(diferenciaLongitud / 2).let {
-                    it * it
-                }
+        val diferenciaLat = Math.toRadians(
+            destino.latitud - origen.latitud
+        )
 
-        val aSeguro = a.coerceIn(0.0, 1.0)
+        val diferenciaLon = Math.toRadians(
+            destino.longitud - origen.longitud
+        )
+
+        val a =
+            Math.sin(diferenciaLat / 2).let { it * it } +
+                    Math.cos(lat1) * Math.cos(lat2) *
+                    Math.sin(diferenciaLon / 2).let { it * it }
 
         val c = 2 * Math.atan2(
-            Math.sqrt(aSeguro),
-            Math.sqrt(1 - aSeguro)
+            Math.sqrt(a),
+            Math.sqrt(1 - a)
         )
 
         return radioTierra * c
     }
 
-    fun getRestauranteById(id: Int): Restaurante? {
+    fun getRestauranteById(id: Long): Restaurante? {
         return restaurantes.find { it.id == id}
     }
 }

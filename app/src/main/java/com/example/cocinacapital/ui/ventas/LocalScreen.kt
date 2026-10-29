@@ -26,7 +26,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.cocinacapital.data.AppContainer
 import com.example.cocinacapital.data.model.*
-import kotlin.math.sin
 
 private val AzulCapital = Color(0xFF1762B8)
 private val FondoCapital = Color(0xFFF8FBFE)

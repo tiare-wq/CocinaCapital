@@ -7,7 +7,7 @@ import com.example.cocinacapital.data.model.Pregunta
 import com.example.cocinacapital.data.model.TipoPreferencia
 import com.example.cocinacapital.data.model.ValoresPrecio
 
-class PreguntasRepository {
+class PreferenciaRepository {
 
     private val opcionesComida = CategoriaRestaurante.entries.map { categoria ->
         Opcion(

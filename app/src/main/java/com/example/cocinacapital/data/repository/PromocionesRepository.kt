@@ -108,6 +108,5 @@ class PromocionesRepository {
             activa = true
         )
     )
-
-    fun getPromociones(): List<Promocion> = promociones
+    fun getAllPromociones(): List<Promocion> = promociones
 }

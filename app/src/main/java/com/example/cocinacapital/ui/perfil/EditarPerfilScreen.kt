@@ -23,8 +23,8 @@ import com.example.cocinacapital.ui.components.AuthColors
 import com.example.cocinacapital.ui.components.AuthField
 import com.example.cocinacapital.ui.components.AuthPrimaryButton
 import com.example.cocinacapital.ui.components.CocinaLayout
-import com.example.cocinacapital.ui.screen.validarMail
-import com.example.cocinacapital.ui.screen.validarPassword
+import com.example.cocinacapital.ui.auth.validarMail
+import com.example.cocinacapital.ui.auth.validarPassword
 
 @Composable
 fun EditarPerfilScreen(

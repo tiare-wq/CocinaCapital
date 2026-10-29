@@ -1,5 +1,4 @@
-
-package com.example.cocinacapital.ui.promocion
+package com.example.cocinacapital.ui.viewmodel
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf

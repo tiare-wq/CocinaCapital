@@ -1,11 +1,16 @@
 
 package com.example.cocinacapital.data.repository
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.provider.CallLog.Calls.PRIORITY
 import androidx.datastore.preferences.core.doublePreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.preferencesDataStore
 import com.example.cocinacapital.data.model.Ubicacion
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.Priority
+import com.google.android.gms.tasks.CancellationTokenSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -19,7 +24,7 @@ private val Context.dataStore by preferencesDataStore(
 private val LATITUD = doublePreferencesKey("latitud")
 private val LONGITUD = doublePreferencesKey("longitud")
 
-object UbicacionRepository {
+object UbicacionRepositoryy {
 
     // Ubicación activa en memoria
     private val _ubicacionActual =
@@ -34,6 +39,7 @@ object UbicacionRepository {
         longitud: Double
     ) {
         _ubicacionActual.value = Ubicacion(
+            id = 1,
             latitud = latitud,
             longitud = longitud
         )
@@ -69,6 +75,7 @@ object UbicacionRepository {
 
             if (latitud != null && longitud != null) {
                 Ubicacion(
+                    id = 2,
                     latitud = latitud,
                     longitud = longitud
                 )
@@ -91,5 +98,56 @@ object UbicacionRepository {
         }
 
         limpiarUbicacion()
+    }
+}
+
+class UbicacionRepository(context: Context) {
+    val fusedLocationService =
+        LocationServices.getFusedLocationProviderClient(context)
+
+    @SuppressLint("MissingPermission")
+    fun obtenerUbicacionActual(onCall: (Ubicacion?) -> Unit) {
+        val cancellationTokenSource = CancellationTokenSource()
+
+        fusedLocationService.getCurrentLocation(
+            Priority.PRIORITY_BALANCED_POWER_ACCURACY,
+            cancellationTokenSource.token
+        ).addOnSuccessListener { location ->
+            val ubicacion = location?.let {
+                Ubicacion(
+                    id = 0,
+                    latitud = it.latitude,
+                    longitud = it.longitude
+                )
+            }
+            onCall(ubicacion)
+        }.addOnFailureListener { exception ->
+            print("Error al obtener la ubicación. ${exception.message}")
+            onCall(null)
+        }
+    }
+    // Calcular distancia mediante fórmula de Haversine
+    fun calcularDistancia(
+        origen: Ubicacion,
+        destino: Ubicacion
+    ): Double {
+        val radioTierra = 6371.0
+        val lat1 = Math.toRadians(origen.latitud)
+        val lat2 = Math.toRadians(destino.latitud)
+        val diferenciaLat = Math.toRadians(
+            destino.latitud - origen.latitud
+        )
+        val diferenciaLon = Math.toRadians(
+            destino.longitud - origen.longitud
+        )
+        val a =
+            Math.sin(diferenciaLat / 2).let { it * it } +
+                    Math.cos(lat1) * Math.cos(lat2) *
+                    Math.sin(diferenciaLon / 2).let { it * it }
+        val c = 2 * Math.atan2(
+            Math.sqrt(a),
+            Math.sqrt(1 - a)
+        )
+        return radioTierra * c
     }
 }

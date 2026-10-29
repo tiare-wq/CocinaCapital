@@ -17,7 +17,6 @@ import com.example.cocinacapital.data.model.Promocion
 import com.example.cocinacapital.ui.components.CocinaLayout
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.ui.Alignment
 import com.example.cocinacapital.data.AppContainer
 
 @Composable

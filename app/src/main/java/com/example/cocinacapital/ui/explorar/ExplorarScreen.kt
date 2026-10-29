@@ -1,4 +1,3 @@
-
 package com.example.cocinacapital.ui.explorar
 
 import androidx.compose.foundation.Image
@@ -10,7 +9,6 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.Restaurant
 import androidx.compose.material.icons.outlined.Search
@@ -24,105 +22,38 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.cocinacapital.data.model.CategoriaRestaurante
 import com.example.cocinacapital.data.model.Local
 import com.example.cocinacapital.data.model.Promocion
-import com.example.cocinacapital.data.model.Restaurante
+import com.example.cocinacapital.data.model.Ubicacion
 import com.example.cocinacapital.ui.components.AppCard
 import com.example.cocinacapital.ui.components.AppFilterChip
 import com.example.cocinacapital.ui.components.AppSectionTitle
 import com.example.cocinacapital.ui.components.AppStatusBadge
 import com.example.cocinacapital.ui.components.EmptyState
+import com.example.cocinacapital.ui.components.LocalCard
 import com.example.cocinacapital.ui.theme.AppColors
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.todayIn
 import java.util.Locale
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
+// ---------------------
+// SCREEN PÚBLICO
+// ---------------------
 @Composable
-fun ExplorarScreen(
-    favoritos: Set<Int>,
-    onToggleFavorito: (Int) -> Unit,
-    onLocalClick: (Local) -> Unit,
-    onPromocionClick: (Promocion) -> Unit,
-    viewModel: ExplorarViewModel = viewModel()
+fun ExplorarScreenPublico(
+    ubicacion: Ubicacion?,
+    onLocalClick: (Long) -> Unit,
+    onPromocionClick: (Long) -> Unit,
+    filtrarPromociones: (String, CategoriaRestaurante) -> List<Promocion>,
+    filtrarLocales: (String, CategoriaRestaurante) -> List<Local>
 ) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
-    val locales = uiState.locales
-    val promociones = uiState.promociones
-    val restaurantesPorId = uiState.restaurantesPorId
-
-    // Filtrar locales según búsqueda y categoría seleccionada.
-    val localesFiltrados = remember(
-        locales,
-        restaurantesPorId,
-        uiState.busqueda,
-        uiState.categoriaSeleccionada
-    ) {
-        locales.filter { local ->
-            val restaurante = restaurantesPorId[local.id]
-
-            val coincideBusqueda =
-                uiState.busqueda.isBlank() ||
-                        restaurante?.nombre.orEmpty().contains(
-                            uiState.busqueda,
-                            ignoreCase = true
-                        ) ||
-                        restaurante?.descripcion.orEmpty().contains(
-                            uiState.busqueda,
-                            ignoreCase = true
-                        )
-
-            val coincideCategoria =
-                uiState.categoriaSeleccionada == null ||
-                        restaurante?.categorias?.contains(
-                            uiState.categoriaSeleccionada
-                        ) == true
-
-            coincideBusqueda && coincideCategoria
-        }
-    }
-
-    // Filtrar promociones según búsqueda y categoría.
-    val promocionesFiltradas = remember(
-        promociones,
-        restaurantesPorId,
-        uiState.busqueda,
-        uiState.categoriaSeleccionada
-    ) {
-        promociones.filter { promocion ->
-            val restaurante = restaurantesPorId[promocion.local.id]
-
-            val coincideBusqueda =
-                uiState.busqueda.isBlank() ||
-                        promocion.titulo.contains(
-                            uiState.busqueda,
-                            ignoreCase = true
-                        ) ||
-                        promocion.descripcion.contains(
-                            uiState.busqueda,
-                            ignoreCase = true
-                        ) ||
-                        restaurante?.nombre.orEmpty().contains(
-                            uiState.busqueda,
-                            ignoreCase = true
-                        ) ||
-                        promocion.productos.any {
-                            it.nombre.contains(
-                                uiState.busqueda,
-                                ignoreCase = true
-                            )
-                        }
-
-            val coincideCategoria =
-                uiState.categoriaSeleccionada == null ||
-                        restaurante?.categorias?.contains(
-                            uiState.categoriaSeleccionada
-                        ) == true
-
-            coincideBusqueda && coincideCategoria
-        }
-    }
+    var busqueda by remember { mutableStateOf("") }
+    var categoriaSeleccionada by remember { mutableStateOf(CategoriaRestaurante.TODAS) }
+    val promocionesFiltradas = remember { filtrarPromociones(busqueda, categoriaSeleccionada) }
+    val localesFiltrados = remember { filtrarLocales(busqueda, categoriaSeleccionada) }
 
     LazyColumn(
         modifier = Modifier
@@ -132,20 +63,18 @@ fun ExplorarScreen(
         // ENCABEZADO Y BUSCADOR
         item {
             BusquedaHeader(
-                busqueda = uiState.busqueda,
-                onBusquedaChange = viewModel::actualizarBusqueda
+                busqueda = busqueda,
+                onBusquedaChange = { busqueda = it }
             )
         }
-
         // CATEGORÍAS
         item {
             CategoriasSection(
-                categorias = uiState.categorias,
-                categoriaSeleccionada = uiState.categoriaSeleccionada,
-                onCategoriaSeleccionada = viewModel::seleccionarCategoria
+                categorias = CategoriaRestaurante.entries,
+                categoriaSeleccionada = categoriaSeleccionada,
+                onCategoriaSeleccionada = { categoriaSeleccionada = it }
             )
         }
-
         // PROMOCIONES
         item {
             AppSectionTitle(
@@ -156,7 +85,6 @@ fun ExplorarScreen(
                     .padding(top = 30.dp, bottom = 15.dp)
             )
         }
-
         if (promocionesFiltradas.isEmpty()) {
             item {
                 EmptyState(
@@ -170,25 +98,12 @@ fun ExplorarScreen(
                 items = promocionesFiltradas.take(10),
                 key = { "promocion_${it.id}" }
             ) { promocion ->
-                val idsProductos = promocion.productos.map { it.id }
-
-                val esFavorito =
-                    idsProductos.isNotEmpty() &&
-                            idsProductos.all { it in favoritos }
-
                 PromocionCard(
                     promocion = promocion,
-                    restaurante = restaurantesPorId[promocion.local.id],
-                    esFavorito = esFavorito,
-                    onClick = { onPromocionClick(promocion) },
+                    local = promocion.local,
+                    onClick = { onPromocionClick(promocion.id) },
                     onFavoritoClick = {
-                        idsProductos.forEach { id ->
-                            if (esFavorito) {
-                                onToggleFavorito(id)
-                            } else if (id !in favoritos) {
-                                onToggleFavorito(id)
-                            }
-                        }
+                        advertenciaDialogo("Necesitas iniciar sesión para acceder a esta funcionalidad")
                     }
                 )
             }
@@ -197,14 +112,13 @@ fun ExplorarScreen(
         // LOCALES
         item {
             AppSectionTitle(
-                title = "Restaurantes",
+                title = "Locales",
                 subtitle = "${localesFiltrados.size} locales encontrados",
                 modifier = Modifier
                     .padding(horizontal = 22.dp)
                     .padding(top = 30.dp, bottom = 15.dp)
             )
         }
-
         if (localesFiltrados.isEmpty()) {
             item {
                 EmptyState(
@@ -220,8 +134,7 @@ fun ExplorarScreen(
             ) { local ->
                 LocalCard(
                     local = local,
-                    restaurante = restaurantesPorId[local.id],
-                    onClick = { onLocalClick(local) }
+                    onClick = { onLocalClick(local.id) }
                 )
             }
         }
@@ -302,8 +215,8 @@ private fun BusquedaHeader(
 @Composable
 private fun CategoriasSection(
     categorias: List<CategoriaRestaurante>,
-    categoriaSeleccionada: CategoriaRestaurante?,
-    onCategoriaSeleccionada: (CategoriaRestaurante?) -> Unit
+    categoriaSeleccionada: CategoriaRestaurante,
+    onCategoriaSeleccionada: (CategoriaRestaurante) -> Unit
 ) {
     Column(
         modifier = Modifier.padding(top = 26.dp)
@@ -323,9 +236,9 @@ private fun CategoriasSection(
             item {
                 AppFilterChip(
                     text = "Todas",
-                    selected = categoriaSeleccionada == null,
+                    selected = categoriaSeleccionada == CategoriaRestaurante.TODAS,
                     onClick = {
-                        onCategoriaSeleccionada(null)
+                        onCategoriaSeleccionada(CategoriaRestaurante.TODAS)
                     }
                 )
             }
@@ -411,92 +324,20 @@ private fun CategoriaCard(
 }
 
 // --------------------------------------------------
-// TARJETA DE LOCAL
-// --------------------------------------------------
-
-@Composable
-private fun LocalCard(
-    local: Local,
-    restaurante: Restaurante?,
-    onClick: () -> Unit
-) {
-    AppCard(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 22.dp, vertical = 6.dp)
-            .clickable(onClick = onClick)
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Surface(
-                modifier = Modifier.size(68.dp),
-                shape = RoundedCornerShape(12.dp),
-                color = AppColors.IconBackground
-            ) {
-                Box(contentAlignment = Alignment.Center) {
-                    Icon(
-                        imageVector = Icons.Outlined.Restaurant,
-                        contentDescription = null,
-                        tint = AppColors.Primary,
-                        modifier = Modifier.size(32.dp)
-                    )
-                }
-            }
-
-            Spacer(Modifier.width(14.dp))
-
-            Column(
-                modifier = Modifier.weight(1f)
-            ) {
-                Text(
-                    text = restaurante?.nombre ?: "Nombre no registrado",
-                    color = AppColors.TextPrimary,
-                    fontSize = 15.sp,
-                    fontWeight = FontWeight.Bold
-                )
-
-                Spacer(Modifier.height(5.dp))
-
-                Text(
-                    text = restaurante?.descripcion ?: "Sin descripción",
-                    color = AppColors.TextSecondary,
-                    fontSize = 12.sp,
-                    lineHeight = 17.sp,
-                    maxLines = 2
-                )
-
-                Spacer(Modifier.height(7.dp))
-
-                Text(
-                    text = restaurante?.categorias
-                        ?.joinToString(" • ") { it.titulo }
-                        .orEmpty(),
-                    color = AppColors.Primary,
-                    fontSize = 11.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    maxLines = 2
-                )
-            }
-        }
-    }
-}
-
-// --------------------------------------------------
 // TARJETA DE PROMOCIÓN
 // --------------------------------------------------
 
+@OptIn(ExperimentalTime::class)
 @Composable
 private fun PromocionCard(
     promocion: Promocion,
-    restaurante: Restaurante?,
-    esFavorito: Boolean,
+    local: Local,
     onClick: () -> Unit,
     onFavoritoClick: () -> Unit
 ) {
+    val zonaHoraria = TimeZone.currentSystemDefault()
+    val hoy = Clock.System.todayIn(zonaHoraria)
+    val estado = promocion.fecha_termino >= hoy
     AppCard(
         modifier = Modifier
             .fillMaxWidth()
@@ -524,15 +365,15 @@ private fun PromocionCard(
                     .align(Alignment.TopStart)
                     .padding(12.dp)
             )
-
             AppStatusBadge(
-                text = if (promocion.activa) "Activa" else "Inactiva",
-                backgroundColor = if (promocion.activa) {
+
+                text = if (estado) "Activa" else "Inactiva",
+                backgroundColor = if (estado) {
                     AppColors.SuccessBackground
                 } else {
                     AppColors.Inactive
                 },
-                textColor = if (promocion.activa) {
+                textColor = if (estado) {
                     AppColors.Success
                 } else {
                     AppColors.TextSecondary
@@ -565,7 +406,7 @@ private fun PromocionCard(
                 Spacer(Modifier.height(4.dp))
 
                 Text(
-                    text = restaurante?.nombre ?: "Nombre no registrado",
+                    text = local.nombre,
                     color = AppColors.Primary,
                     fontSize = 12.sp,
                     fontWeight = FontWeight.SemiBold
@@ -592,9 +433,7 @@ private fun PromocionCard(
                     fontWeight = FontWeight.Medium,
                     maxLines = 2
                 )
-
                 Spacer(Modifier.height(7.dp))
-
                 Text(
                     text = "A ${
                         String.format(
@@ -607,29 +446,21 @@ private fun PromocionCard(
                     fontSize = 11.sp
                 )
             }
-
             IconButton(
                 onClick = onFavoritoClick
             ) {
                 Icon(
-                    imageVector = if (esFavorito) {
-                        Icons.Filled.Favorite
-                    } else {
-                        Icons.Outlined.FavoriteBorder
-                    },
-                    contentDescription = if (esFavorito) {
-                        "Quitar productos de favoritos"
-                    } else {
-                        "Agregar productos a favoritos"
-                    },
-                    tint = if (esFavorito) {
-                        AppColors.Favorite
-                    } else {
-                        AppColors.IconMuted
-                    },
+                    imageVector = Icons.Outlined.FavoriteBorder,
+                    contentDescription = "Agregar productos a favoritos",
+                    tint = AppColors.IconMuted,
                     modifier = Modifier.size(26.dp)
                 )
             }
         }
     }
+}
+
+@Composable
+fun advertenciaDialogo(texto: String) {
+    Text(texto)
 }

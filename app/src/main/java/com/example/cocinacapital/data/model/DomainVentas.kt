@@ -6,16 +6,27 @@ import kotlinx.datetime.todayIn
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
+enum class Parametro {
+    LOCAL,
+    PRODUCTOS,
+    TITULO,
+    DESCRIPCION,
+    DESCUENTO,
+    IMAGEN,
+    FECHA_INICIO,
+    FECHA_TERMINO
+}
+
 data class Promocion(
-    val id: Int,
+    val id: Long,
     val local: Local,
     val productos: MutableList<Producto>,
     val titulo: String,
     val descripcion: String,
     val descuento: Int,
-    val distancia: Double,
     val imagen: Int,
-    val activa: Boolean
+    val fecha_inicio: LocalDate,
+    val fecha_termino: LocalDate
 )
 
 @OptIn(ExperimentalTime::class)

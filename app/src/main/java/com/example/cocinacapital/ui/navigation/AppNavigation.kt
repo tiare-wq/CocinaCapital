@@ -13,6 +13,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -24,14 +25,17 @@ import androidx.navigation.compose.*
 import com.example.cocinacapital.data.AppContainer
 import com.example.cocinacapital.data.model.*
 import com.example.cocinacapital.data.repository.*
-import com.example.cocinacapital.ui.home.HomeRoute
-import com.example.cocinacapital.ui.home.HomeViewModel
-import com.example.cocinacapital.ui.explorar.ExplorarScreen
+import com.example.cocinacapital.ui.auth.LoginScreen
+import com.example.cocinacapital.ui.auth.RegistroScreen
+import com.example.cocinacapital.ui.explorar.ExplorarRoutes
+import com.example.cocinacapital.ui.inicio.InicioRoute
 import com.example.cocinacapital.ui.perfil.*
-import com.example.cocinacapital.ui.promocion.PromocionScreen
+import com.example.cocinacapital.ui.screen.PromocionScreen
 import com.example.cocinacapital.ui.screen.*
 import com.example.cocinacapital.ui.theme.AppColors
-import com.example.cocinacapital.ui.viewmodel.UserViewModel
+import com.example.cocinacapital.ui.ubicacion.UbicacionViewModel
+import com.example.cocinacapital.ui.ubicacion.UbicacionViewModelFactory
+import com.example.cocinacapital.ui.user.UserViewModel
 
 @OptIn(kotlin.time.ExperimentalTime::class)
 @Composable
@@ -43,7 +47,17 @@ fun AppNavigation() {
         .currentBackStackEntryAsState().value
         ?.destination?.route
 
-    val usuarioViewModel: UserViewModel = viewModel()
+    // Usuario
+    val userViewModel: UserViewModel = viewModel()
+    val userUiState by userViewModel.userUiState.collectAsStateWithLifecycle()
+    val estado = userUiState.estado
+
+    // Ubicación
+    val context = LocalContext.current
+    val ubicacionViewModel: UbicacionViewModel = viewModel(
+        factory = UbicacionViewModelFactory(context)
+    )
+    val ubicacion = ubicacionViewModel.ubicacion
 
     // Repositorios
     val productoRepository = remember { ProductoRepository() }
@@ -73,11 +87,11 @@ fun AppNavigation() {
 
     // Navegación inferior
     val bottomItems = listOf(
-        Routes.HOME,
-        Routes.EXPLORAR,
-        Routes.MAPA,
-        Routes.FAVORITOS,
-        Routes.PERFIL
+        AppRoutes.Main.INICIO,
+        AppRoutes.Main.EXPLORAR,
+        AppRoutes.Main.MAPA,
+        AppRoutes.Main.FAVORITOS,
+        AppRoutes.Main.PERFIL
     )
 
     val showBottomBar = currentRoute != LoginRoutes.INICIO_SESION &&
@@ -202,7 +216,7 @@ fun AppNavigation() {
 
             composable(LoginRoutes.PREGUNTAS) {
                 PreguntasScreen(
-                    preguntas = AppContainer.preguntasRepository
+                    preguntas = AppContainer.preferenciaRepository
                         .obtenerPreguntas(),
                     user = user,
                     onLocationClick = { usuario ->
@@ -227,31 +241,38 @@ fun AppNavigation() {
             }
 
             // INICIO
-            composable(Routes.HOME.ruta) {
-                val homeViewModel: HomeViewModel = viewModel()
-
-                HomeRoute(
-                    viewModel = homeViewModel,
-                    userViewModel = usuarioViewModel,
-
+            composable(Routes.INICIO.ruta) {
+                InicioRoute(
+                    estado = estado,
                     onExplorarClick = {
-                        navController.navigate(Routes.EXPLORAR.ruta)
+                        navController.navigate(AppRoutes.Main.EXPLORAR.ruta)
                     },
-
+                    onPromocionClick = {
+                        navController.navigate(AppRoutes.Content.PROMOCION)
+                    },
+                    onLocalClick = {
+                        navController.navigate(AppRoutes.Content.LOCAL)
+                    },
                     onLoginClick = {
-                        navController.navigate(LoginRoutes.INICIO_SESION) {
-                            popUpTo(Routes.HOME.ruta) {
-                                inclusive = true
-                            }
-                        }
+                        navController.navigate(AppRoutes.Auth.INICIO_SESION)
                     },
+                    onRegistroClick = {
+                        navController.navigate(AppRoutes.Auth.REGISTRO)
+                    }
+                )
+            }
 
-                    onCartClick = {
-                        navController.navigate(Routes.CART.ruta)
+            // EXPLORAR
+            composable(Routes.EXPLORAR.ruta) {
+                ExplorarRoutes(
+                    user = user,
+                    ubicacion = ubicacion,
+                    estado = estado,
+                    onPromocionClick = {
+                        navController.navigate(AppRoutes.Content.PROMOCION)
                     },
-
-                    onPromocionClick = { id ->
-                        navController.navigate("promocion/$id")
+                    onLocalClick = {
+                        navController.navigate(AppRoutes.Content.LOCAL)
                     }
                 )
             }
@@ -290,22 +311,6 @@ fun AppNavigation() {
                         }
                     )
                 }
-            }
-
-            // EXPLORAR
-            composable(Routes.EXPLORAR.ruta) {
-
-                ExplorarScreen(
-                    favoritos = favoritos,
-                    onToggleFavorito = ::toggleFavorito,
-
-                    onLocalClick = { local ->
-                        navController.navigate("local/${local.id}")
-                    },
-                    onPromocionClick = { promocion ->
-                        navController.navigate("promocion/${promocion.id}")
-                    }
-                )
             }
 
             // DETALLE LOCAL
@@ -356,35 +361,6 @@ fun AppNavigation() {
                 )
             }
 
-            // CARRITO
-            composable(Routes.CART.ruta) {
-
-                val cartItems by AppContainer.cartRepository
-                    .cartItems.collectAsStateWithLifecycle()
-
-                CartScreen(
-                    cartItems = cartItems,
-
-                    onIncrease = { id ->
-                        productoRepository.findProductById(id)?.let {
-                            AppContainer.cartRepository.addProductos(it)
-                        }
-                    },
-
-                    onDecrease = { id ->
-                        AppContainer.cartRepository.decrease(id)
-                    },
-
-                    onRemove = { id ->
-                        AppContainer.cartRepository.remove(id)
-                    },
-
-                    onBack = {
-                        navController.popBackStack()
-                    }
-                )
-            }
-
             // PERFIL
             composable(Routes.PERFIL.ruta) {
                 PerfilScreen(
@@ -414,7 +390,7 @@ fun AppNavigation() {
                     user = user ?: User(
                         0, "", "", "", 0,
                         mutableListOf<Preferencia>(),
-                        0.0, 0.0
+                        null
                     )
                 )
             }
@@ -436,7 +412,7 @@ fun AppNavigation() {
                 user?.let { usuario ->
                     PreferenciasScreen(
                         user = usuario,
-                        preguntas = AppContainer.preguntasRepository
+                        preguntas = AppContainer.preferenciaRepository
                             .obtenerPreguntas(),
 
                         onUpdateClick = { actualizado ->

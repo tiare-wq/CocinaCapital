@@ -56,20 +56,19 @@ enum class CategoriaRestaurante (
         "Comida Vegetariana",
         "Comida Vegetariana",
         R.drawable.comida_vegetariana
+    ),
+    TODAS(
+        "Todas",
+        "",
+        0
     )
 }
 
-data class Restaurante (
-    val id: Int,
+class Local (
+    val id: Long,
     var nombre: String,
     val descripcion: String,
+    val direccion: String,
+    val ubicacion: Ubicacion?,
     val categorias: MutableList<CategoriaRestaurante>
-)
-
-class Local (
-    val id: Int,
-    val restauranteId: Int,
-    val ubicacion: String,
-    val latitud: Double,
-    val longitud: Double,
 )

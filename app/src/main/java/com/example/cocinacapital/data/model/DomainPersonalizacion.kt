@@ -31,7 +31,7 @@ enum class TipoPreferencia {
 }
 
 data class Pregunta(
-    val id: Int,
+    val id: Long,
     val statement: String,
     val options: List<Opcion>,
     val withImages: Boolean,

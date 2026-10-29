@@ -7,7 +7,7 @@ enum class TipoPostre { DULCES, TARTA, HELADO, REPOSTERIA }
 enum class TipoBebida { AGUA, JUGO, GASEOSA, COCTEL, CARTA_VINO }
 
 open class Producto(
-    val id: Int,
+    val id: Long,
     val nombre: String,
     val descr: String,
     val restauranteId: Int,
@@ -33,26 +33,26 @@ open class Producto(
 }
 
 class Entrada(
-    id: Int, nombre: String, descr: String, restauranteId: Int, stock: Int,
+    id: Long, nombre: String, descr: String, restauranteId: Int, stock: Int,
     precio: Double, val tipoEntrada: TipoEntrada
 ) : Producto(id, nombre, descr, restauranteId, stock, precio)
 
 class PlatoPrincipal(
-    id: Int, nombre: String, descr: String, restauranteId: Int, stock: Int,
+    id: Long, nombre: String, descr: String, restauranteId: Int, stock: Int,
     precio: Double, val tipoPlatoPrincipal: TipoPlatoPrincipal
 ) : Producto(id, nombre, descr, restauranteId, stock, precio)
 
 class Guarnicion(
-    id: Int, nombre: String, descr: String, restauranteId: Int, stock: Int,
+    id: Long, nombre: String, descr: String, restauranteId: Int, stock: Int,
     precio: Double, val tipoGuarnicion: TipoGuarnicion
 ) : Producto(id, nombre, descr, restauranteId, stock, precio)
 
 class Postre(
-    id: Int, nombre: String, descr: String, restauranteId: Int, stock: Int,
+    id: Long, nombre: String, descr: String, restauranteId: Int, stock: Int,
     precio: Double, val tipoPostre: TipoPostre
 ) : Producto(id, nombre, descr, restauranteId, stock, precio)
 
 class Bebida(
-    id: Int, nombre: String, descr: String, restauranteId: Int, stock: Int,
+    id: Long, nombre: String, descr: String, restauranteId: Int, stock: Int,
     precio: Double, val tipoBebida: TipoBebida
 ) : Producto(id, nombre, descr, restauranteId, stock, precio)

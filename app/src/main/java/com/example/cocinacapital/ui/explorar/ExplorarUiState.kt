@@ -1,5 +1,6 @@
 package com.example.cocinacapital.ui.explorar
 
+import androidx.compose.runtime.remember
 import androidx.lifecycle.ViewModel
 import com.example.cocinacapital.data.AppContainer
 import com.example.cocinacapital.data.model.CategoriaRestaurante
@@ -10,6 +11,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlin.collections.get
 
 data class ExplorarUiState(
     val categorias: List<CategoriaRestaurante> =
@@ -32,7 +34,7 @@ class ExplorarViewModel : ViewModel() {
     private val promocionRepository = AppContainer.promocionesRepository
 
     private val _uiState = MutableStateFlow(ExplorarUiState())
-    val uiState: StateFlow<ExplorarUiState> = _uiState.asStateFlow()
+    val explorarUiState: StateFlow<ExplorarUiState> = _uiState.asStateFlow()
 
     init {
         loadExplorar()
@@ -112,6 +114,37 @@ class ExplorarViewModel : ViewModel() {
     fun seleccionarCategoria(categoria: CategoriaRestaurante?) {
         _uiState.update {
             it.copy(categoriaSeleccionada = categoria)
+        }
+    }
+
+    // Filtrar locales según búsqueda y categoría seleccionada.
+    val localesFiltrados = remember(
+        locales,
+        restaurantesPorId,
+        uiState.busqueda,
+        uiState.categoriaSeleccionada
+    ) {
+        locales.filter { local ->
+            val restaurante = restaurantesPorId[local.id]
+
+            val coincideBusqueda =
+                uiState.busqueda.isBlank() ||
+                        restaurante?.nombre.orEmpty().contains(
+                            uiState.busqueda,
+                            ignoreCase = true
+                        ) ||
+                        restaurante?.descripcion.orEmpty().contains(
+                            uiState.busqueda,
+                            ignoreCase = true
+                        )
+
+            val coincideCategoria =
+                uiState.categoriaSeleccionada == null ||
+                        restaurante?.categorias?.contains(
+                            uiState.categoriaSeleccionada
+                        ) == true
+
+            coincideBusqueda && coincideCategoria
         }
     }
 }

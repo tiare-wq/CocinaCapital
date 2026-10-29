@@ -1,4 +1,4 @@
-package com.example.cocinacapital.ui.screen
+package com.example.cocinacapital.ui.auth
 
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -8,31 +8,25 @@ import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import kotlinx.coroutines.launch
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.cocinacapital.data.AppContainer
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.cocinacapital.data.model.User
-import com.example.cocinacapital.data.repository.UbicacionRepository
 import com.example.cocinacapital.ui.components.*
-import kotlinx.coroutines.flow.first
+import com.example.cocinacapital.ui.user.UserViewModel
 
 @Composable
 fun LoginScreen(
     onRegistroClick: () -> Unit,
     onLoginSuccess: (User) -> Unit
 ) {
-    val context = LocalContext.current
-    val scope = rememberCoroutineScope()
+    val userViewModel: UserViewModel = viewModel()
 
-    var mail by rememberSaveable { mutableStateOf("") }
+    var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
     var errorMessage by rememberSaveable { mutableStateOf("") }
-
-    val authRepository = remember { AppContainer.authRepository }
 
     AuthLayout(
         title = "Vuelve a tu cocina",
@@ -40,9 +34,9 @@ fun LoginScreen(
     ) {
         AuthField(
             label = "Correo electrónico",
-            value = mail,
+            value = email,
             onValueChange = {
-                mail = it
+                email = it
                 errorMessage = ""
             },
             placeholder = "tu@correo.com",
@@ -79,37 +73,12 @@ fun LoginScreen(
 
         AuthPrimaryButton(
             text = "Iniciar sesión",
-            enabled = mail.isNotBlank() && password.isNotBlank(),
+            enabled = email.isNotBlank() && password.isNotBlank(),
             onClick = {
-
-                val usuario = authRepository.login(
-                    mail.trim(),
-                    password
-                )
-
-                if (usuario != null) {
-
+                val user = userViewModel.iniciarSesion(email.trim(), password)
+                if (user != null) {
                     errorMessage = ""
-
-                    scope.launch {
-
-                        // Recuperar última ubicación guardada
-                        val ubicacion = UbicacionRepository
-                            .obtenerUltimaUbicacion(context)
-                            .first()
-
-                        // Actualizar ubicación activa
-                        if (ubicacion != null) {
-                            UbicacionRepository.actualizarUbicacion(
-                                ubicacion.latitud,
-                                ubicacion.longitud
-                            )
-                        }
-
-                        // Continuar al inicio
-                        onLoginSuccess(usuario)
-                    }
-
+                    onLoginSuccess(user)
                 } else {
                     errorMessage = "Correo o contraseña incorrectos."
                 }

@@ -1,14 +1,13 @@
 package com.example.cocinacapital.data.model
 
 data class User(
-    val id: Int,
+    val id: Long,
     var email: String,
     var name: String,
     var password: String,
     var foto: Int,
     val preferencias: MutableList<Preferencia>,
-    var latitud: Double?,
-    var longitud: Double?)
+    var ubicacion: Ubicacion?)
 
 data class Preferencia (
     val tipoPreferencia: TipoPreferencia,

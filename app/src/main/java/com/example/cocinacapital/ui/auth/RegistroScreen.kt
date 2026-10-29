@@ -1,4 +1,4 @@
-package com.example.cocinacapital.ui.screen
+package com.example.cocinacapital.ui.auth
 
 import android.util.Patterns
 import androidx.compose.foundation.layout.Spacer
@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.example.cocinacapital.R
+import com.example.cocinacapital.data.model.Ubicacion
 import com.example.cocinacapital.data.model.User
 import com.example.cocinacapital.data.repository.AuthRepository
 import com.example.cocinacapital.ui.components.*
@@ -102,8 +103,8 @@ fun RegistroScreen(
                     password = password,
                     foto = R.drawable.default_profile,
                     preferencias = mutableListOf(),
-                    latitud = 0.0,
-                    longitud = 0.0)
+                    ubicacion = Ubicacion(1)
+                )
                 onPreguntasClick(usuario)
             }
         )

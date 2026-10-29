@@ -1,5 +1,4 @@
-
-package com.example.cocinacapital.ui.promocion
+package com.example.cocinacapital.ui.screen
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -22,6 +21,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.cocinacapital.ui.viewmodel.PromocionViewModel
 import com.example.cocinacapital.ui.theme.AppColors
 
 @Composable
