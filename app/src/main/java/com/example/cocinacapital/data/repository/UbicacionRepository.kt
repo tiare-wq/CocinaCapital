@@ -126,28 +126,4 @@ class UbicacionRepository(context: Context) {
             onCall(null)
         }
     }
-    // Calcular distancia mediante fórmula de Haversine
-    fun calcularDistancia(
-        origen: Ubicacion,
-        destino: Ubicacion
-    ): Double {
-        val radioTierra = 6371.0
-        val lat1 = Math.toRadians(origen.latitud)
-        val lat2 = Math.toRadians(destino.latitud)
-        val diferenciaLat = Math.toRadians(
-            destino.latitud - origen.latitud
-        )
-        val diferenciaLon = Math.toRadians(
-            destino.longitud - origen.longitud
-        )
-        val a =
-            Math.sin(diferenciaLat / 2).let { it * it } +
-                    Math.cos(lat1) * Math.cos(lat2) *
-                    Math.sin(diferenciaLon / 2).let { it * it }
-        val c = 2 * Math.atan2(
-            Math.sqrt(a),
-            Math.sqrt(1 - a)
-        )
-        return radioTierra * c
-    }
 }

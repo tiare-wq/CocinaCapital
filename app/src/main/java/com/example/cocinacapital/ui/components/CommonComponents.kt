@@ -218,3 +218,29 @@ fun AppStatusBadge(
         )
     }
 }
+
+// --------------------------------------------------
+// VENTANA DE ADVERTENCIA
+// --------------------------------------------------
+@Composable
+fun AdvertenciaDialogo(
+    texto: String,
+    onDismiss: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text("Atención")
+        },
+        text = {
+            Text(texto)
+        },
+        confirmButton = {
+            TextButton(
+                onClick = onDismiss
+            ) {
+                Text("Aceptar")
+            }
+        }
+    )
+}

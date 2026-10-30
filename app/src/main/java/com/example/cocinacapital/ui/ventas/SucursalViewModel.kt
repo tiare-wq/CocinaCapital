@@ -21,35 +21,4 @@ class SucursalViewModel {
     val sucursalUiState: StateFlow<SucursalUiState> = _uiState.asStateFlow()
     val localRepository = AppContainer.sucursalRepository
     val locales = localRepository.getAllLocales()
-    // Filtrar locales según búsqueda y categoría seleccionada.
-    fun filtrarLocales(busqueda: String, categoria: CategoriaRestaurante): List<Local> {
-        return locales.filter { local ->
-            val coincideBusqueda =
-                busqueda.isBlank() ||
-                        local.nombre.contains(
-                            busqueda,
-                            ignoreCase = true
-                        ) ||
-                        local.descripcion.orEmpty().contains(
-                            busqueda,
-                            ignoreCase = true
-                        )
-            val coincideCategoria =
-                categoria == CategoriaRestaurante.TODAS || local.categorias.contains(
-                    categoria
-                )
-            coincideBusqueda && coincideCategoria
-        }
-    }
-    // Calcular y ordenar los locales por distancia
-    fun identificarLocalesCercanos(ubicacion: Ubicacion): List<Local> {
-        return ubicacion.let { origen ->
-            locales.flatMap { local ->
-                calcularDistancia(
-                    origen,
-                    local.ubicacion
-                )
-            }.sortedBy {  }
-        }
-    }
 }

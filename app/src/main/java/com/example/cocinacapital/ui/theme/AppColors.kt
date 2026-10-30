@@ -32,4 +32,13 @@ object AppColors {
     val Favorite = Color(0xFFE53935)
 
     val Sky = Color(0xFF6089CB)
+    val AzulMapa = Color(0xFF1762B8)
+    val FondoMapa = Color(0xFFF8FBFE)
+    val TextoMapa = Color(0xFF1D3850)
+    val GrisMapa = Color(0xFF71869A)
+
+    val AzulFavoritos = Color(0xFF1762B8)
+    val FondoFavoritos = Color(0xFFF8FBFE)
+    val TextoFavoritos = Color(0xFF1D3850)
+    val TextoSecundarioFavoritos = Color(0xFF71869A)
 }

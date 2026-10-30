@@ -50,7 +50,7 @@ class UbicacionViewModel(
             ) == PackageManager.PERMISSION_GRANTED
 
             if (tienePermiso) {
-                this.obtenenerUbicacion()
+                obtenenerUbicacion()
             } else {
                 permisosUbicacion.launch (
                     arrayOf(

@@ -69,6 +69,6 @@ class Local (
     var nombre: String,
     val descripcion: String,
     val direccion: String,
-    val ubicacion: Ubicacion?,
+    val ubicacion: Ubicacion,
     val categorias: MutableList<CategoriaRestaurante>
 )

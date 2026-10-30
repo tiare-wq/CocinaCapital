@@ -24,17 +24,6 @@ fun InicioRoute(
     val inicioViewModel: InicioViewModel = viewModel()
     val inicioUiState by inicioViewModel.inicioUiState.collectAsStateWithLifecycle()
 
-    val promocionViewModel: PromocionViewModel = viewModel()
-    val sucursalViewModel: SucursalViewModel = viewModel()
-
-    val onOrdenar: (Parametro, Int) -> List<Promocion> = { parametro, cantidad ->
-        promocionViewModel.promocionesOrdenadas(parametro, cantidad)
-    }
-    val onPreferences: (Int, User) -> List<Promocion> = { cantidad, user ->
-        promocionViewModel.promocionesSugeridasAlimentacion(cantidad, user)
-    }
-    val locales = sucursalViewModel.locales
-
     PantallaSegunEstado(
         estado = estado,
         pantallaPublica = {
@@ -45,8 +34,8 @@ fun InicioRoute(
                 onLocalClick = onLocalClick,
                 onLoginClick = onLoginClick,
                 onRegistroClick = onRegistroClick,
-                onOrdenar = onOrdenar,
-                locales = locales
+                onOrdenar = inicioViewModel::promocionesOrdenadas,
+                locales = inicioViewModel.locales
             )},
         pantallaPrivada = {user ->
             InicioScreenPrivado(
@@ -54,7 +43,7 @@ fun InicioRoute(
                 inicioUiState = inicioUiState,
                 onPromocionClick = onPromocionClick,
                 onLocalClick = onLocalClick,
-                onPreferences = onPreferences,
-                locales = locales
+                onPreferences = inicioViewModel::promocionesSugeridasAlimentacion,
+                locales = inicioViewModel.locales
         )})
 }

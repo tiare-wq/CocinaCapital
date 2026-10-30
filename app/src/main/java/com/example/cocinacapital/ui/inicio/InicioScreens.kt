@@ -126,7 +126,6 @@ fun InicioScreenPublico(
             ) {
                 LocalCard(
                     local = local,
-                    restaurante = null,
                     onClick = {onLocalClick(local.id)})
             }
         }
@@ -249,7 +248,6 @@ fun InicioScreenPrivado(
             ) {
                 LocalCard(
                     local = local,
-                    restaurante = null,
                     onClick = {onLocalClick(local.id)})
             }
         }

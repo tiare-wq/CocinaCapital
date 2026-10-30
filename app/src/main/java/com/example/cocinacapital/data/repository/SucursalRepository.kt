@@ -1,5 +1,6 @@
 package com.example.cocinacapital.data.repository
 
+import androidx.compose.runtime.remember
 import com.example.cocinacapital.data.model.CategoriaRestaurante
 import com.example.cocinacapital.data.model.Local
 import com.example.cocinacapital.data.model.Restaurante
@@ -152,59 +153,60 @@ class SucursalRepository {
             it.id == id
         }
     }
-
+    // Filtrar locales según búsqueda y categoría seleccionada.
+    fun filtrarLocales(busqueda: String, categoria: CategoriaRestaurante): List<Local> {
+        return locales.filter { local ->
+            val coincideBusqueda =
+                busqueda.isBlank() ||
+                        local.nombre.contains(
+                            busqueda,
+                            ignoreCase = true
+                        ) ||
+                        local.descripcion.orEmpty().contains(
+                            busqueda,
+                            ignoreCase = true
+                        )
+            val coincideCategoria =
+                categoria == CategoriaRestaurante.TODAS || local.categorias.contains(
+                    categoria
+                )
+            coincideBusqueda && coincideCategoria
+        }
+    }
     // Obtener locales cercanos a una ubicación
-    fun getNearby(
-        latitud: Double,
-        longitud: Double,
+    fun obtenerLocalesRadio(
+        origen: Ubicacion,
         radioKm: Double
     ): List<Local> {
-
-        val ubicacionUsuario = Pair(latitud, longitud)
-
         return locales.filter { local ->
             calcularDistancia(
-                ubicacionUsuario.first,
-                ubicacionUsuario.second,
-                local.latitud,
-                local.longitud
+                origen = origen,
+                destino = local.ubicacion,
             ) <= radioKm
         }
     }
-
     // Calcular distancia mediante fórmula de Haversine
     fun calcularDistancia(
         origen: Ubicacion,
         destino: Ubicacion
     ): Double {
-
         val radioTierra = 6371.0
-
         val lat1 = Math.toRadians(origen.latitud)
         val lat2 = Math.toRadians(destino.latitud)
-
         val diferenciaLat = Math.toRadians(
             destino.latitud - origen.latitud
         )
-
         val diferenciaLon = Math.toRadians(
             destino.longitud - origen.longitud
         )
-
         val a =
             Math.sin(diferenciaLat / 2).let { it * it } +
                     Math.cos(lat1) * Math.cos(lat2) *
                     Math.sin(diferenciaLon / 2).let { it * it }
-
         val c = 2 * Math.atan2(
             Math.sqrt(a),
             Math.sqrt(1 - a)
         )
-
         return radioTierra * c
-    }
-
-    fun getRestauranteById(id: Long): Restaurante? {
-        return restaurantes.find { it.id == id}
     }
 }

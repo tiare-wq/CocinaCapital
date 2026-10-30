@@ -28,7 +28,10 @@ import com.example.cocinacapital.data.repository.*
 import com.example.cocinacapital.ui.auth.LoginScreen
 import com.example.cocinacapital.ui.auth.RegistroScreen
 import com.example.cocinacapital.ui.explorar.ExplorarRoutes
+import com.example.cocinacapital.ui.favoritos.FavoritosRoute
+import com.example.cocinacapital.ui.favoritos.FavoritosScreen
 import com.example.cocinacapital.ui.inicio.InicioRoute
+import com.example.cocinacapital.ui.mapa.MapaRoute
 import com.example.cocinacapital.ui.perfil.*
 import com.example.cocinacapital.ui.screen.PromocionScreen
 import com.example.cocinacapital.ui.screen.*
@@ -75,11 +78,6 @@ fun AppNavigation() {
         )
     }
 
-    // Estado de favoritos
-    var favoritos by remember {
-        mutableStateOf(setOf<Int>())
-    }
-
     // Productos
     val productos = remember {
         productoRepository.getProductos().toMutableStateList()
@@ -111,14 +109,6 @@ fun AppNavigation() {
         navController.navigate(LoginRoutes.INICIO_SESION) {
             popUpTo(0) { inclusive = true }
             launchSingleTop = true
-        }
-    }
-
-    fun toggleFavorito(id: Int) {
-        favoritos = if (id in favoritos) {
-            favoritos - id
-        } else {
-            favoritos + id
         }
     }
 
@@ -241,7 +231,7 @@ fun AppNavigation() {
             }
 
             // INICIO
-            composable(Routes.INICIO.ruta) {
+            composable(AppRoutes.Main.INICIO.ruta) {
                 InicioRoute(
                     estado = estado,
                     onExplorarClick = {
@@ -263,16 +253,42 @@ fun AppNavigation() {
             }
 
             // EXPLORAR
-            composable(Routes.EXPLORAR.ruta) {
+            composable(AppRoutes.Main.EXPLORAR.ruta) {
                 ExplorarRoutes(
                     user = user,
-                    ubicacion = ubicacion,
+                    ubicacion = ubicacion.value,
                     estado = estado,
                     onPromocionClick = {
                         navController.navigate(AppRoutes.Content.PROMOCION)
                     },
                     onLocalClick = {
                         navController.navigate(AppRoutes.Content.LOCAL)
+                    }
+                )
+            }
+
+            // MAPA
+            composable(AppRoutes.Main.MAPA.ruta) {
+                MapaRoute(
+                    ubicacion = ubicacion.value,
+                    onLocalClick = {
+                        navController.navigate(AppRoutes.Content.LOCAL)
+                    }
+                )
+            }
+
+            // FAVORITOS
+            composable(AppRoutes.Main.FAVORITOS.ruta) {
+                FavoritosRoute(
+                    estado = estado,
+                    onProductoClick = {
+                        navController.navigate(AppRoutes.Content.PRODUCTO)
+                    },
+                    onPromocionClick = {
+                        navController.navigate(AppRoutes.Content.PROMOCION)
+                    },
+                    onLoginClick = {
+                        navController.navigate(AppRoutes.Auth.INICIO_SESION)
                     }
                 )
             }
@@ -335,30 +351,6 @@ fun AppNavigation() {
                         }
                     )
                 }
-            }
-
-            // MAPA
-            composable(Routes.MAPA.ruta) {
-                MapasScreen(
-                    locales = sucursalRepository.getAll(),
-                    onLocalClick = { local ->
-                        navController.navigate("local/${local.id}")
-                    }
-                )
-            }
-
-            // FAVORITOS
-            composable(Routes.FAVORITOS.ruta) {
-                FavoritosScreen(
-                    productos = productos,
-                    favoritos = favoritos,
-                    onQuitarFavorito = { id ->
-                        toggleFavorito(id)
-                    },
-                    onProductoClick = { producto ->
-                        // Navegación al detalle pendiente
-                    }
-                )
             }
 
             // PERFIL

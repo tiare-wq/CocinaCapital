@@ -56,5 +56,6 @@ object AppRoutes {
     object Content {
         const val PROMOCION = "promocion"
         const val LOCAL = "local"
+        const val PRODUCTO = "producto"
     }
 }

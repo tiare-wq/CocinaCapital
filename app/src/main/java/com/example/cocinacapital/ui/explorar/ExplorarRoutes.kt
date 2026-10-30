@@ -11,8 +11,10 @@ import com.example.cocinacapital.data.model.Ubicacion
 import com.example.cocinacapital.data.model.User
 import com.example.cocinacapital.ui.EstadoUsuario
 import com.example.cocinacapital.ui.PantallaSegunEstado
+import com.example.cocinacapital.ui.favoritos.FavoritosViewModel
 import com.example.cocinacapital.ui.ventas.PromocionViewModel
 import com.example.cocinacapital.ui.ventas.SucursalViewModel
+import kotlin.math.exp
 
 @Composable
 fun ExplorarRoutes(
@@ -23,15 +25,7 @@ fun ExplorarRoutes(
     onLocalClick: (Long) -> Unit,
 ) {
     val explorarViewModel: ExplorarViewModel = viewModel()
-    val explorarUiState by explorarViewModel.explorarUiState.collectAsStateWithLifecycle()
-    val promocionViewModel: PromocionViewModel = viewModel()
-    val sucursalViewModel: SucursalViewModel = viewModel()
-
-    val filtrarPromociones: (String, CategoriaRestaurante) -> List<Promocion> = { busqueda, categoria ->
-        promocionViewModel.filtrarPromociones(busqueda, categoria) }
-    val filtrarLocales: (String, CategoriaRestaurante) -> List<Local> = { busqueda, categoria ->
-        sucursalViewModel.filtrarLocales(busqueda, categoria)
-    }
+    val favoritosViewModel: FavoritosViewModel = viewModel()
 
     PantallaSegunEstado(
         estado = estado,
@@ -40,10 +34,22 @@ fun ExplorarRoutes(
                 ubicacion = ubicacion,
                 onPromocionClick = onPromocionClick,
                 onLocalClick = onLocalClick,
-                filtrarPromociones = filtrarPromociones,
-                filtrarLocales = filtrarLocales
+                filtrarPromociones = explorarViewModel::filtrarPromociones,
+                filtrarLocales = explorarViewModel::filtrarLocales,
+                calcularDistancia = explorarViewModel::calcularDistancia
             )
         },
-        pantallaPrivada = ExplorarScreenPrivado
-        )
+        pantallaPrivada = {
+            ExplorarScreenPrivado(
+                user = requireNotNull(user),
+                favoritos = favoritosViewModel.favoritos.value,
+                onToggleFavorito = favoritosViewModel::toggleFavorito,
+                ubicacion = ubicacion,
+                onPromocionClick = onPromocionClick,
+                onLocalClick = onLocalClick,
+                filtrarPromociones = explorarViewModel::filtrarPromociones,
+                filtrarLocales = explorarViewModel::filtrarLocales,
+                calcularDistancia = explorarViewModel::calcularDistancia
+            )
+        })
 }

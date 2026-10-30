@@ -1,19 +1,36 @@
-package com.example.cocinacapital.ui.explorar
+package com.example.cocinacapital.ui.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.outlined.FavoriteBorder
-import androidx.compose.material.icons.outlined.Restaurant
 import androidx.compose.material.icons.outlined.Search
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -26,12 +43,6 @@ import com.example.cocinacapital.data.model.CategoriaRestaurante
 import com.example.cocinacapital.data.model.Local
 import com.example.cocinacapital.data.model.Promocion
 import com.example.cocinacapital.data.model.Ubicacion
-import com.example.cocinacapital.ui.components.AppCard
-import com.example.cocinacapital.ui.components.AppFilterChip
-import com.example.cocinacapital.ui.components.AppSectionTitle
-import com.example.cocinacapital.ui.components.AppStatusBadge
-import com.example.cocinacapital.ui.components.EmptyState
-import com.example.cocinacapital.ui.components.LocalCard
 import com.example.cocinacapital.ui.theme.AppColors
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.todayIn
@@ -39,118 +50,13 @@ import java.util.Locale
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
-// ---------------------
-// SCREEN PÚBLICO
-// ---------------------
-@Composable
-fun ExplorarScreenPublico(
-    ubicacion: Ubicacion?,
-    onLocalClick: (Long) -> Unit,
-    onPromocionClick: (Long) -> Unit,
-    filtrarPromociones: (String, CategoriaRestaurante) -> List<Promocion>,
-    filtrarLocales: (String, CategoriaRestaurante) -> List<Local>
-) {
-    var busqueda by remember { mutableStateOf("") }
-    var categoriaSeleccionada by remember { mutableStateOf(CategoriaRestaurante.TODAS) }
-    val promocionesFiltradas = remember { filtrarPromociones(busqueda, categoriaSeleccionada) }
-    val localesFiltrados = remember { filtrarLocales(busqueda, categoriaSeleccionada) }
-
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(AppColors.Background)
-    ) {
-        // ENCABEZADO Y BUSCADOR
-        item {
-            BusquedaHeader(
-                busqueda = busqueda,
-                onBusquedaChange = { busqueda = it }
-            )
-        }
-        // CATEGORÍAS
-        item {
-            CategoriasSection(
-                categorias = CategoriaRestaurante.entries,
-                categoriaSeleccionada = categoriaSeleccionada,
-                onCategoriaSeleccionada = { categoriaSeleccionada = it }
-            )
-        }
-        // PROMOCIONES
-        item {
-            AppSectionTitle(
-                title = "Promociones para ti",
-                subtitle = "${promocionesFiltradas.size} promociones disponibles",
-                modifier = Modifier
-                    .padding(horizontal = 22.dp)
-                    .padding(top = 30.dp, bottom = 15.dp)
-            )
-        }
-        if (promocionesFiltradas.isEmpty()) {
-            item {
-                EmptyState(
-                    mensaje = "No encontramos promociones",
-                    descripcion = "Intenta cambiar tu búsqueda o filtros.",
-                    icon = Icons.Outlined.Restaurant
-                )
-            }
-        } else {
-            items(
-                items = promocionesFiltradas.take(10),
-                key = { "promocion_${it.id}" }
-            ) { promocion ->
-                PromocionCard(
-                    promocion = promocion,
-                    local = promocion.local,
-                    onClick = { onPromocionClick(promocion.id) },
-                    onFavoritoClick = {
-                        advertenciaDialogo("Necesitas iniciar sesión para acceder a esta funcionalidad")
-                    }
-                )
-            }
-        }
-
-        // LOCALES
-        item {
-            AppSectionTitle(
-                title = "Locales",
-                subtitle = "${localesFiltrados.size} locales encontrados",
-                modifier = Modifier
-                    .padding(horizontal = 22.dp)
-                    .padding(top = 30.dp, bottom = 15.dp)
-            )
-        }
-        if (localesFiltrados.isEmpty()) {
-            item {
-                EmptyState(
-                    mensaje = "No encontramos restaurantes",
-                    descripcion = "Prueba con otra búsqueda o categoría.",
-                    icon = Icons.Outlined.Restaurant
-                )
-            }
-        } else {
-            items(
-                items = localesFiltrados.take(5),
-                key = { "local_${it.id}" }
-            ) { local ->
-                LocalCard(
-                    local = local,
-                    onClick = { onLocalClick(local.id) }
-                )
-            }
-        }
-
-        item {
-            Spacer(Modifier.height(24.dp))
-        }
-    }
-}
 
 // --------------------------------------------------
 // ENCABEZADO Y BUSCADOR
 // --------------------------------------------------
 
 @Composable
-private fun BusquedaHeader(
+fun BusquedaHeader(
     busqueda: String,
     onBusquedaChange: (String) -> Unit
 ) {
@@ -213,7 +119,7 @@ private fun BusquedaHeader(
 // --------------------------------------------------
 
 @Composable
-private fun CategoriasSection(
+fun CategoriasSection(
     categorias: List<CategoriaRestaurante>,
     categoriaSeleccionada: CategoriaRestaurante,
     onCategoriaSeleccionada: (CategoriaRestaurante) -> Unit
@@ -264,7 +170,7 @@ private fun CategoriasSection(
 // --------------------------------------------------
 
 @Composable
-private fun CategoriaCard(
+fun CategoriaCard(
     categoria: CategoriaRestaurante,
     seleccionada: Boolean,
     onClick: () -> Unit
@@ -329,15 +235,18 @@ private fun CategoriaCard(
 
 @OptIn(ExperimentalTime::class)
 @Composable
-private fun PromocionCard(
+fun PromocionCardPublic(
     promocion: Promocion,
+    ubicacion: Ubicacion?,
     local: Local,
     onClick: () -> Unit,
-    onFavoritoClick: () -> Unit
+    onFavoritoClick: () -> Unit,
+    calcularDistancia: (Ubicacion, Ubicacion) -> Double
 ) {
     val zonaHoraria = TimeZone.currentSystemDefault()
     val hoy = Clock.System.todayIn(zonaHoraria)
     val estado = promocion.fecha_termino >= hoy
+
     AppCard(
         modifier = Modifier
             .fillMaxWidth()
@@ -433,18 +342,20 @@ private fun PromocionCard(
                     fontWeight = FontWeight.Medium,
                     maxLines = 2
                 )
-                Spacer(Modifier.height(7.dp))
-                Text(
-                    text = "A ${
-                        String.format(
-                            Locale("es", "CL"),
-                            "%.1f",
-                            promocion.distancia
-                        )
-                    } km",
-                    color = AppColors.TextSecondary,
-                    fontSize = 11.sp
-                )
+                if (ubicacion != null) {
+                    Spacer(Modifier.height(7.dp))
+                    Text(
+                        text = "A ${
+                            String.format(
+                                Locale("es", "CL"),
+                                "%.1f",
+                                calcularDistancia(ubicacion, local.ubicacion)
+                            )
+                        } km",
+                        color = AppColors.TextSecondary,
+                        fontSize = 11.sp
+                    )
+                }
             }
             IconButton(
                 onClick = onFavoritoClick
@@ -460,7 +371,154 @@ private fun PromocionCard(
     }
 }
 
+@OptIn(ExperimentalTime::class)
 @Composable
-fun advertenciaDialogo(texto: String) {
-    Text(texto)
+fun PromocionCardPrivate(
+    promocion: Promocion,
+    ubicacion: Ubicacion?,
+    local: Local,
+    onClick: () -> Unit,
+    esFavorito: Boolean,
+    onFavoritoClick: () -> Unit,
+    calcularDistancia: (Ubicacion, Ubicacion) -> Double
+) {
+    val zonaHoraria = TimeZone.currentSystemDefault()
+    val hoy = Clock.System.todayIn(zonaHoraria)
+    val estado = promocion.fecha_termino >= hoy
+
+    AppCard(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 22.dp, vertical = 7.dp)
+    ) {
+        // IMAGEN Y ETIQUETAS
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(155.dp)
+                .clickable(onClick = onClick)
+        ) {
+            Image(
+                painter = painterResource(promocion.imagen),
+                contentDescription = promocion.titulo,
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop
+            )
+
+            AppStatusBadge(
+                text = "${promocion.descuento}% OFF",
+                backgroundColor = AppColors.Primary,
+                textColor = AppColors.Surface,
+                modifier = Modifier
+                    .align(Alignment.TopStart)
+                    .padding(12.dp)
+            )
+
+            AppStatusBadge(
+                text = if (estado) "Activa" else "Inactiva",
+                backgroundColor = if (estado) {
+                    AppColors.SuccessBackground
+                } else {
+                    AppColors.Inactive
+                },
+                textColor = if (estado) {
+                    AppColors.Success
+                } else {
+                    AppColors.TextSecondary
+                },
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(12.dp)
+            )
+        }
+
+        // INFORMACIÓN
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(15.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .clickable(onClick = onClick)
+            ) {
+                Text(
+                    text = promocion.titulo,
+                    color = AppColors.TextPrimary,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold
+                )
+
+                Spacer(Modifier.height(4.dp))
+
+                Text(
+                    text = local.nombre,
+                    color = AppColors.Primary,
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.SemiBold
+                )
+
+                Spacer(Modifier.height(6.dp))
+
+                Text(
+                    text = promocion.descripcion,
+                    color = AppColors.TextSecondary,
+                    fontSize = 12.sp,
+                    lineHeight = 17.sp,
+                    maxLines = 2
+                )
+
+                Spacer(Modifier.height(8.dp))
+
+                Text(
+                    text = promocion.productos.joinToString(" • ") {
+                        it.nombre
+                    },
+                    color = AppColors.TextPrimary,
+                    fontSize = 11.sp,
+                    fontWeight = FontWeight.Medium,
+                    maxLines = 2
+                )
+                if(ubicacion != null) {
+                    Spacer(Modifier.height(7.dp))
+                    Text(
+                        text = "A ${
+                            String.format(
+                                Locale("es", "CL"),
+                                "%.1f",
+                                calcularDistancia(ubicacion, local.ubicacion)
+                            )
+                        } km",
+                        color = AppColors.TextSecondary,
+                        fontSize = 11.sp
+                    )
+                }
+            }
+
+            IconButton(
+                onClick = onFavoritoClick
+            ) {
+                Icon(
+                    imageVector = if (esFavorito) {
+                        Icons.Filled.Favorite
+                    } else {
+                        Icons.Outlined.FavoriteBorder
+                    },
+                    contentDescription = if (esFavorito) {
+                        "Quitar productos de favoritos"
+                    } else {
+                        "Agregar productos a favoritos"
+                    },
+                    tint = if (esFavorito) {
+                        AppColors.Favorite
+                    } else {
+                        AppColors.IconMuted
+                    },
+                    modifier = Modifier.size(26.dp)
+                )
+            }
+        }
+    }
 }
