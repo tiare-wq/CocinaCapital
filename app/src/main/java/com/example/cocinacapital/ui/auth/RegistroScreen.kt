@@ -21,27 +21,24 @@ import com.example.cocinacapital.ui.components.*
 @Composable
 fun RegistroScreen(
     onBackClick: () -> Unit,
-    onPreguntasClick: (User) -> Unit
+    onRegistrarse: (String, String, String) -> User,
+    onPreferenciasClick: () -> Unit
 ) {
-    val authRepository = AuthRepository()
-
-    var mail by rememberSaveable { mutableStateOf("") }
+    var email by rememberSaveable { mutableStateOf("") }
     var username by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
 
-    val correoValido = mail.isBlank() || validarMail(mail)
+    val correoValido = email.isBlank() || validarMail(email)
     val passwordValida = password.isBlank() || validarPassword(password)
 
     val formularioValido =
         username.isNotBlank() &&
-                validarMail(mail) &&
+                validarMail(email) &&
                 validarPassword(password)
 
     val requisitosPassword =
         "Usa al menos 8 caracteres, una mayúscula, " +
                 "un número y uno de estos símbolos: . ¡ ! ¿ ?"
-
-    val id = authRepository.siguienteId()
 
     AuthLayout(
         title = "Crea tu cuenta",
@@ -59,8 +56,8 @@ fun RegistroScreen(
 
         AuthField(
             label = "Correo electrónico",
-            value = mail,
-            onValueChange = { mail = it },
+            value = email,
+            onValueChange = { email = it },
             placeholder = "tu@correo.com",
             icon = Icons.Filled.Email,
             keyboardType = KeyboardType.Email,
@@ -96,16 +93,8 @@ fun RegistroScreen(
             text = "Registrarse",
             enabled = formularioValido,
             onClick = {
-                val usuario = User(
-                    id = id,
-                    email = mail,
-                    name = username,
-                    password = password,
-                    foto = R.drawable.default_profile,
-                    preferencias = mutableListOf(),
-                    ubicacion = Ubicacion(1)
-                )
-                onPreguntasClick(usuario)
+                val user = onRegistrarse(email, username, password)
+                onPreferenciasClick()
             }
         )
 

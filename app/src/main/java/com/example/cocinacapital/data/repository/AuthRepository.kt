@@ -2,7 +2,9 @@ package com.example.cocinacapital.data.repository
 
 import com.example.cocinacapital.R
 import com.example.cocinacapital.data.model.Preferencia
+import com.example.cocinacapital.data.model.Tarjeta
 import com.example.cocinacapital.data.model.TipoPreferencia
+import com.example.cocinacapital.data.model.Ubicacion
 import com.example.cocinacapital.data.model.User
 
 class AuthRepository {
@@ -39,6 +41,25 @@ class AuthRepository {
         usuarios[index].password = usuario.password
 
         return true
+    }
+
+    fun agregarUsuario(
+        email: String,
+        name: String,
+        password: String
+    ): User {
+        val user = User(
+            siguienteId(),
+            email,
+            name,
+            password,
+            R.drawable.default_profile,
+            mutableListOf<Preferencia>(),
+            mutableListOf<Tarjeta>(),
+            null
+        )
+        usuarios.plus(user)
+        return user
     }
 
     fun siguienteId(): Long {

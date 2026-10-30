@@ -10,7 +10,6 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
-import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -29,13 +28,14 @@ import com.example.cocinacapital.ui.auth.LoginScreen
 import com.example.cocinacapital.ui.auth.RegistroScreen
 import com.example.cocinacapital.ui.explorar.ExplorarRoutes
 import com.example.cocinacapital.ui.favoritos.FavoritosRoute
-import com.example.cocinacapital.ui.favoritos.FavoritosScreen
 import com.example.cocinacapital.ui.inicio.InicioRoute
 import com.example.cocinacapital.ui.mapa.MapaRoute
 import com.example.cocinacapital.ui.perfil.*
-import com.example.cocinacapital.ui.screen.PromocionScreen
+import com.example.cocinacapital.ui.preferencias.PreferenciasScreen
+import com.example.cocinacapital.ui.ventas.PromocionScreen
 import com.example.cocinacapital.ui.screen.*
 import com.example.cocinacapital.ui.theme.AppColors
+import com.example.cocinacapital.ui.ubicacion.LocationScreen
 import com.example.cocinacapital.ui.ubicacion.UbicacionViewModel
 import com.example.cocinacapital.ui.ubicacion.UbicacionViewModelFactory
 import com.example.cocinacapital.ui.user.UserViewModel
@@ -63,25 +63,13 @@ fun AppNavigation() {
     val ubicacion = ubicacionViewModel.ubicacion
 
     // Repositorios
-    val productoRepository = remember { ProductoRepository() }
     val sucursalRepository = remember { SucursalRepository() }
     val promocionRepository = remember { PromocionesRepository() }
     val ticketsRepository = remember { TicketsRepository() }
     val tarjetaRepository = remember { TarjetaRepository() }
 
     // Estado de sesión
-    var user by remember { mutableStateOf<User?>(null) }
-
-    var tarjetas by remember {
-        mutableStateOf(
-            emptyList<Tarjeta>().toMutableStateList()
-        )
-    }
-
-    // Productos
-    val productos = remember {
-        productoRepository.getProductos().toMutableStateList()
-    }
+    var user by remember { mutableStateOf<User?>(userUiState.user) }
 
     // Navegación inferior
     val bottomItems = listOf(
@@ -92,25 +80,10 @@ fun AppNavigation() {
         AppRoutes.Main.PERFIL
     )
 
-    val showBottomBar = currentRoute != LoginRoutes.INICIO_SESION &&
-            currentRoute != LoginRoutes.REGISTRO &&
-            currentRoute != LoginRoutes.LOCATION &&
-            currentRoute != LoginRoutes.LOCATION
-
-    // Funciones auxiliares
-    fun updateUser(nuevoUsuario: User) {
-        user = nuevoUsuario
-    }
-
-    fun cerrarSesion() {
-        user = null
-        tarjetas.clear()
-
-        navController.navigate(LoginRoutes.INICIO_SESION) {
-            popUpTo(0) { inclusive = true }
-            launchSingleTop = true
-        }
-    }
+    val showBottomBar = currentRoute != AppRoutes.Auth.INICIO_SESION &&
+            currentRoute != AppRoutes.Auth.REGISTRO &&
+            currentRoute != AppRoutes.Auth.LOCATION &&
+            currentRoute != AppRoutes.Auth.LOCATION
 
     Scaffold(
         bottomBar = {
@@ -166,25 +139,19 @@ fun AppNavigation() {
 
         NavHost(
             navController = navController,
-            startDestination = LoginRoutes.INICIO_SESION,
+            startDestination = AppRoutes.Auth.INICIO_SESION,
             modifier = Modifier.padding(paddingValues)
         ) {
 
             // AUTENTICACIÓN
-            composable(LoginRoutes.INICIO_SESION) {
+            composable(AppRoutes.Auth.INICIO_SESION) {
                 LoginScreen(
                     onRegistroClick = {
-                        navController.navigate(LoginRoutes.REGISTRO)
+                        navController.navigate(AppRoutes.Auth.REGISTRO)
                     },
-                    onLoginSuccess = { usuario ->
-                        updateUser(usuario)
-
-                        tarjetas = tarjetaRepository
-                            .obtenerTarjetasUsuario(usuario.id)
-                            .toMutableStateList()
-
-                        navController.navigate(Routes.HOME.ruta) {
-                            popUpTo(LoginRoutes.INICIO_SESION) {
+                    onLoginSuccess = {
+                        navController.navigate(AppRoutes.Main.INICIO.ruta) {
+                            popUpTo(AppRoutes.Auth.INICIO_SESION) {
                                 inclusive = true
                             }
                         }
@@ -192,37 +159,37 @@ fun AppNavigation() {
                 )
             }
 
-            composable(LoginRoutes.REGISTRO) {
+            composable(AppRoutes.Auth.REGISTRO) {
                 RegistroScreen(
                     onBackClick = {
                         navController.popBackStack()
                     },
-                    onPreguntasClick = { usuario ->
-                        updateUser(usuario)
-                        navController.navigate(LoginRoutes.PREGUNTAS)
+                    onRegistrarse = userViewModel::registrarse,
+                    onPreferenciasClick = {
+                        navController.navigate(AppRoutes.Auth.PREFERENCIAS)
                     }
                 )
             }
 
-            composable(LoginRoutes.PREGUNTAS) {
-                PreguntasScreen(
-                    preguntas = AppContainer.preferenciaRepository
-                        .obtenerPreguntas(),
-                    user = user,
-                    onLocationClick = { usuario ->
-                        updateUser(requireNotNull(usuario) {
-                            "No es posible localizar al usuario"
-                        })
-                        navController.navigate(LoginRoutes.LOCATION)
+            composable(AppRoutes.Auth.PREFERENCIAS) {
+                PreferenciasScreen(
+                    user = requireNotNull(user),
+                    actualizarUsuario = userViewModel::actualizarUsuario,
+                    preguntas = userViewModel.preguntas,
+                    onLocationClick = {
+                        navController.navigate(AppRoutes.Auth.LOCATION)
                     }
                 )
             }
 
-            composable(LoginRoutes.LOCATION) {
+            composable(AppRoutes.Auth.LOCATION) {
                 LocationScreen(
+                    user = requireNotNull(user),
+                    actualizarUsuario = userViewModel::actualizarUsuario,
+                    ubicacionViewModel = ubicacionViewModel,
                     onInicioClick = {
-                        navController.navigate(Routes.HOME.ruta) {
-                            popUpTo(LoginRoutes.INICIO_SESION) {
+                        navController.navigate(AppRoutes.Main.INICIO.ruta) {
+                            popUpTo(AppRoutes.Auth.INICIO_SESION) {
                                 inclusive = true
                             }
                         }

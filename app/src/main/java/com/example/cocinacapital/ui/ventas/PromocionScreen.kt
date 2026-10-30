@@ -1,4 +1,4 @@
-package com.example.cocinacapital.ui.screen
+package com.example.cocinacapital.ui.ventas
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect

@@ -1,4 +1,4 @@
-package com.example.cocinacapital.ui.screen
+package com.example.cocinacapital.ui.preferencias
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -38,15 +38,12 @@ import com.example.cocinacapital.data.model.Pregunta
 import com.example.cocinacapital.data.model.User
 
 @Composable
-fun PreguntasScreen(
-    user: User?,
+fun PreferenciasScreen(
+    user: User,
+    actualizarUsuario: (User) -> Unit,
     preguntas: List<Pregunta>,
-    onLocationClick: (User?) -> Unit
+    onLocationClick: () -> Unit
 ) {
-    val preferenciasSeleccionadas = remember {
-        mutableStateListOf<Preferencia>()
-    }
-
     val respuestas = remember {
         preguntas.map {
             mutableStateListOf<Boolean>().apply {
@@ -191,12 +188,12 @@ fun PreguntasScreen(
                                 )
                             }
 
-                            user?.let { usuario ->
+                            user.let { usuario ->
                                 usuario.preferencias.clear()
                                 usuario.preferencias.addAll(nuevasPreferencias)
                             }
-
-                            onLocationClick(user)
+                            actualizarUsuario(user)
+                            onLocationClick()
                         }
                     ) {
                         Text("Guardar y continuar")

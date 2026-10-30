@@ -32,16 +32,12 @@ data class Promocion(
 @OptIn(ExperimentalTime::class)
 data class Tarjeta(
     val nroTarjeta: Long,
-    val usuario: User?,
     val fechaVencimiento: LocalDate,
     val prioritaria: Boolean
 ) {
     init {
         require(nroTarjeta.toString().length == 16) {
             "La tarjeta debe tener exactamente 16 números"
-        }
-        require(usuario != null && usuario.name.isNotBlank()) {
-            "El usuario no puede ser nulo"
         }
         require(fechaVencimiento >= Clock.System.todayIn(TimeZone.currentSystemDefault()))
     }

@@ -5,7 +5,9 @@ import com.example.cocinacapital.data.repository.PreferenciaRepository
 import com.example.cocinacapital.data.repository.ProductoRepository
 import com.example.cocinacapital.data.repository.PromocionesRepository
 import com.example.cocinacapital.data.repository.SucursalRepository
+import com.example.cocinacapital.data.repository.TarjetaRepository
 import com.example.cocinacapital.data.repository.UbicacionRepository
+import kotlin.time.ExperimentalTime
 
 object AppContainer {
     val authRepository = AuthRepository()
@@ -13,5 +15,6 @@ object AppContainer {
     val productoRepository = ProductoRepository()
     val promocionesRepository = PromocionesRepository()
     val sucursalRepository = SucursalRepository()
-    val ubicacionRepository = UbicacionRepository(context)
+    @OptIn(ExperimentalTime::class)
+    val tarjetaRepository = TarjetaRepository()
 }

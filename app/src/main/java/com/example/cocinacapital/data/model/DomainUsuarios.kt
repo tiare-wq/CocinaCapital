@@ -7,6 +7,7 @@ data class User(
     var password: String,
     var foto: Int,
     val preferencias: MutableList<Preferencia>,
+    val tarjetas: MutableList<Tarjeta>,
     var ubicacion: Ubicacion?)
 
 data class Preferencia (

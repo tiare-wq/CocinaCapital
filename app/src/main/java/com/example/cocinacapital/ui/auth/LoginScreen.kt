@@ -20,7 +20,7 @@ import com.example.cocinacapital.ui.user.UserViewModel
 @Composable
 fun LoginScreen(
     onRegistroClick: () -> Unit,
-    onLoginSuccess: (User) -> Unit
+    onLoginSuccess: () -> Unit
 ) {
     val userViewModel: UserViewModel = viewModel()
 
@@ -78,7 +78,7 @@ fun LoginScreen(
                 val user = userViewModel.iniciarSesion(email.trim(), password)
                 if (user != null) {
                     errorMessage = ""
-                    onLoginSuccess(user)
+                    onLoginSuccess()
                 } else {
                     errorMessage = "Correo o contraseña incorrectos."
                 }
