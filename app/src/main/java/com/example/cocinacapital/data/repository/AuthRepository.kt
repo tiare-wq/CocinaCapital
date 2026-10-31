@@ -1,23 +1,57 @@
 package com.example.cocinacapital.data.repository
 
 import com.example.cocinacapital.R
+import com.example.cocinacapital.data.model.CategoriaRestaurante
 import com.example.cocinacapital.data.model.Preferencia
 import com.example.cocinacapital.data.model.Tarjeta
 import com.example.cocinacapital.data.model.TipoPreferencia
-import com.example.cocinacapital.data.model.Ubicacion
 import com.example.cocinacapital.data.model.User
+import kotlinx.datetime.LocalDate
 
 class AuthRepository {
 
-    private val usuarios = listOf<User>(
-        User(1, "ana@outlook.com", "Ana", "Anita27.", R.drawable.foto_ana, mutableListOf<Preferencia>(), null),
-        User(2, "miguelangel@gmail.com", "Miguel Angelo", "MonaTuLisa76.", R.drawable.foto_ana, mutableListOf<Preferencia>(), null),
-        User(3, "leonardo_dicaprio@outlook.com", "Lobo Wallstreet", "Rose2001.", R.drawable.foto_ana, mutableListOf<Preferencia>(), null)
+    private val usuarios = mutableListOf(
+        User(
+            id =1,
+            email = "ana@outlook.com",
+            name = "Ana",
+            password = "Anita27.",
+            foto = R.drawable.foto_ana,
+            preferencias = mutableListOf<Preferencia>(
+                Preferencia(TipoPreferencia.OPCIONES_COMIDA,
+                    mutableListOf(
+                        CategoriaRestaurante.JAPONESA.name,
+                        CategoriaRestaurante.VEGETARIANA.name
+                    ))),
+            tarjetas = mutableListOf<Long>(
+
+            ),
+            ubicacionID = 1),
+        User(
+            id = 2,
+            email = "miguelangel@gmail.com",
+            name ="Miguel Angelo",
+            password = "MonaTuLisa76.",
+            foto =R.drawable.default_profile,
+            preferencias = mutableListOf<Preferencia>(),
+            tarjetas = mutableListOf<Long>(),
+            ubicacionID = 2),
+        User(
+            id = 3,
+            email = "leonardo_dicaprio@outlook.com",
+            name = "Lobo Wallstreet",
+            password = "Rose2001.",
+            foto = R.drawable.default_profile,
+            preferencias = mutableListOf<Preferencia>(),
+            tarjetas = mutableListOf<Long>(),
+            ubicacionID = null)
     )
 
     fun login(email: String, password: String): User? {
         val user: User? = getUsuarioByEmail(email)
         if ( user != null && user.password == password ) {
+            println("Usuario: ${user.name}")
+            println("Preferencias: ${user.preferencias}")
             return user
         }
         return null
@@ -29,18 +63,6 @@ class AuthRepository {
 
     fun getUsuarioByEmail(email: String): User? {
         return usuarios.find{ it.email == email }
-    }
-
-    fun updateUser(usuario: User): Boolean {
-        val user = getUserById(usuario.id)
-        if (user == null) return false
-
-        val index = usuarios.indexOf(user)
-        usuarios[index].email = usuario.email
-        usuarios[index].name = usuario.name
-        usuarios[index].password = usuario.password
-
-        return true
     }
 
     fun agregarUsuario(
@@ -55,10 +77,10 @@ class AuthRepository {
             password,
             R.drawable.default_profile,
             mutableListOf<Preferencia>(),
-            mutableListOf<Tarjeta>(),
+            mutableListOf<Long>(),
             null
         )
-        usuarios.plus(user)
+        usuarios.add(user)
         return user
     }
 

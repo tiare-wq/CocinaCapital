@@ -21,28 +21,31 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.*
 
-import com.example.cocinacapital.data.AppContainer
 import com.example.cocinacapital.data.model.*
-import com.example.cocinacapital.data.repository.*
-import com.example.cocinacapital.ui.auth.LoginScreen
-import com.example.cocinacapital.ui.auth.RegistroScreen
-import com.example.cocinacapital.ui.explorar.ExplorarRoutes
-import com.example.cocinacapital.ui.favoritos.FavoritosRoute
-import com.example.cocinacapital.ui.inicio.InicioRoute
-import com.example.cocinacapital.ui.mapa.MapaRoute
-import com.example.cocinacapital.ui.perfil.*
-import com.example.cocinacapital.ui.preferencias.PreferenciasScreen
-import com.example.cocinacapital.ui.ventas.PromocionScreen
-import com.example.cocinacapital.ui.tarjeta.TarjetaScreen
-import com.example.cocinacapital.ui.tarjeta.TarjetaViewModel
+import com.example.cocinacapital.exceptions.ResourceNotFoundException
+import com.example.cocinacapital.ui.pages.auth.LoginScreen
+import com.example.cocinacapital.ui.pages.auth.RegistroScreen
+import com.example.cocinacapital.ui.pages.explorar.ExplorarRoutes
+import com.example.cocinacapital.ui.pages.favoritos.FavoritosRoute
+import com.example.cocinacapital.ui.pages.inicio.InicioRoute
+import com.example.cocinacapital.ui.pages.mapa.MapaRoute
+import com.example.cocinacapital.ui.pages.perfil.EditarPerfilScreen
+import com.example.cocinacapital.ui.pages.perfil.EditarPreferenciasScreen
+import com.example.cocinacapital.ui.pages.perfil.PerfilRoute
+import com.example.cocinacapital.ui.pages.preferencias.PreferenciasScreen
+import com.example.cocinacapital.ui.pages.tarjeta.TarjetaScreen
+import com.example.cocinacapital.ui.pages.tarjeta.TarjetaViewModel
 import com.example.cocinacapital.ui.theme.AppColors
-import com.example.cocinacapital.ui.tickets.MisTicketsScreen
-import com.example.cocinacapital.ui.tickets.TicketViewModel
-import com.example.cocinacapital.ui.tickets.TicketViewModelFactory
-import com.example.cocinacapital.ui.ubicacion.LocationScreen
-import com.example.cocinacapital.ui.ubicacion.UbicacionViewModel
-import com.example.cocinacapital.ui.ubicacion.UbicacionViewModelFactory
-import com.example.cocinacapital.ui.user.UserViewModel
+import com.example.cocinacapital.ui.pages.tickets.MisTicketsScreen
+import com.example.cocinacapital.ui.pages.tickets.TicketViewModel
+import com.example.cocinacapital.ui.pages.tickets.TicketViewModelFactory
+import com.example.cocinacapital.ui.pages.ubicacion.LocationScreen
+import com.example.cocinacapital.ui.pages.ubicacion.UbicacionViewModel
+import com.example.cocinacapital.ui.pages.ubicacion.UbicacionViewModelFactory
+import com.example.cocinacapital.ui.pages.user.UserViewModel
+import com.example.cocinacapital.ui.pages.ventas.local.LocalScreen
+import com.example.cocinacapital.ui.pages.ventas.local.SucursalViewModel
+import com.example.cocinacapital.ui.pages.ventas.promocion.PromocionRoute
 
 @OptIn(kotlin.time.ExperimentalTime::class)
 @Composable
@@ -60,7 +63,7 @@ fun AppNavigation() {
     val estado = userUiState.estado
 
     // Estado de sesión
-    var user by remember { mutableStateOf<User?>(userUiState.user) }
+    val user = userUiState.user
 
     // Ubicación
     val context = LocalContext.current
@@ -77,11 +80,8 @@ fun AppNavigation() {
 
     // Tarjetas
     val tarjetasViewModel: TarjetaViewModel = viewModel()
-
-    // Repositorios
-    val sucursalRepository = remember { SucursalRepository() }
-    val promocionRepository = remember { PromocionesRepository() }
-    val ticketsRepository = remember { TicketsRepository() }
+    // Local
+    val localViewModel: SucursalViewModel = viewModel()
 
     // Navegación inferior
     val bottomItems = listOf(
@@ -94,7 +94,7 @@ fun AppNavigation() {
 
     val showBottomBar = currentRoute != AppRoutes.Auth.INICIO_SESION &&
             currentRoute != AppRoutes.Auth.REGISTRO &&
-            currentRoute != AppRoutes.Auth.LOCATION &&
+            currentRoute != AppRoutes.Auth.PREFERENCIAS &&
             currentRoute != AppRoutes.Auth.LOCATION
 
     Scaffold(
@@ -158,6 +158,7 @@ fun AppNavigation() {
             // AUTENTICACIÓN
             composable(AppRoutes.Auth.INICIO_SESION) {
                 LoginScreen(
+                    onIniciarSesion = userViewModel::iniciarSesion,
                     onRegistroClick = {
                         navController.navigate(AppRoutes.Auth.REGISTRO)
                     },
@@ -216,11 +217,11 @@ fun AppNavigation() {
                     onExplorarClick = {
                         navController.navigate(AppRoutes.Main.EXPLORAR.ruta)
                     },
-                    onPromocionClick = {
-                        navController.navigate(AppRoutes.Content.PROMOCION)
+                    onPromocionClick = { id ->
+                        navController.navigate("${AppRoutes.Content.PROMOCION}/$id")
                     },
-                    onLocalClick = {
-                        navController.navigate(AppRoutes.Content.LOCAL)
+                    onLocalClick = { id ->
+                        navController.navigate("${AppRoutes.Content.LOCAL}/$id")
                     },
                     onLoginClick = {
                         navController.navigate(AppRoutes.Auth.INICIO_SESION)
@@ -234,14 +235,13 @@ fun AppNavigation() {
             // EXPLORAR
             composable(AppRoutes.Main.EXPLORAR.ruta) {
                 ExplorarRoutes(
-                    user = user,
                     ubicacion = ubicacion.value,
                     estado = estado,
-                    onPromocionClick = {
-                        navController.navigate(AppRoutes.Content.PROMOCION)
+                    onPromocionClick = { id ->
+                        navController.navigate("${AppRoutes.Content.PROMOCION}/$id")
                     },
-                    onLocalClick = {
-                        navController.navigate(AppRoutes.Content.LOCAL)
+                    onLocalClick = { id ->
+                        navController.navigate("${AppRoutes.Content.LOCAL}/$id")
                     }
                 )
             }
@@ -250,9 +250,10 @@ fun AppNavigation() {
             composable(AppRoutes.Main.MAPA.ruta) {
                 MapaRoute(
                     ubicacion = ubicacion.value,
-                    onLocalClick = {
-                        navController.navigate(AppRoutes.Content.LOCAL)
-                    }
+                    onLocalClick = { id ->
+                        navController.navigate("${AppRoutes.Content.LOCAL}/$id")
+                    },
+                    ubicacionViewModel = ubicacionViewModel
                 )
             }
 
@@ -263,8 +264,8 @@ fun AppNavigation() {
                     onProductoClick = {
                         navController.navigate(AppRoutes.Content.PRODUCTO)
                     },
-                    onPromocionClick = {
-                        navController.navigate(AppRoutes.Content.PROMOCION)
+                    onPromocionClick = { id ->
+                        navController.navigate("${AppRoutes.Content.PROMOCION}/$id")
                     },
                     onLoginClick = {
                         navController.navigate(AppRoutes.Auth.INICIO_SESION)
@@ -307,9 +308,10 @@ fun AppNavigation() {
 
             // TARJETA
             composable(AppRoutes.Profile.TARJETA) {
+                val tarjetas = tarjetasViewModel.obtenerTarjetasUsuario(requireNotNull(user).id)
                 TarjetaScreen(
                     user = requireNotNull(user),
-                    tarjetas = userUiState.tarjetas,
+                    tarjetas = tarjetas.toMutableStateList(),
                     onAgregarTarjeta = tarjetasViewModel::agregarTarjeta,
                     onEliminarTarjeta = tarjetasViewModel::eliminarTarjeta
                     )
@@ -317,7 +319,7 @@ fun AppNavigation() {
 
             // EDITAR PREFERENCIAS
             composable(AppRoutes.Profile.EDITAR_PREFERENCIAS) {
-                PreferenciasScreen(
+                EditarPreferenciasScreen(
                     user = requireNotNull(user),
                     preguntas = userViewModel.preguntas,
                     onUpdateClick = userViewModel::actualizarUsuario,
@@ -328,63 +330,76 @@ fun AppNavigation() {
             }
 
             // PROMOCIONES
-            composable(AppRoutes.Content.PROMOCION) { entry ->
-                val id = entry.arguments
-                    ?.getString("promocionId")
-                    ?.toIntOrNull()
+            try {
+                composable("promocion/{promocionID}") {entry ->
+                    val id = entry.arguments
+                        ?.getString("promocionID")
+                        ?.toLongOrNull()
 
-                val promocion = promocionRepository
-                    .getPromociones()
-                    .find { it.id == id }
-
-                promocion?.let {
-                    PromocionScreen(
-                        promocion = it,
-
-                        onVolver = {
+                    PromocionRoute(
+                        promocionID = requireNotNull(id),
+                        user = user,
+                        ubicacion = ubicacion.value,
+                        estado = estado,
+                        onTicketClick = {
+                            navController.navigate(AppRoutes.Profile.TICKET)
+                        },
+                        onBackClick = {
                             navController.popBackStack()
                         },
-
-                        onCanjear = { seleccionada ->
-                            user?.let { usuario ->
-                                val canjeado = ticketsRepository
-                                    .canjearPromocion(
-                                        usuarioId = usuario.id,
-                                        promocion = seleccionada
-                                    )
-
-                                if (canjeado) {
-                                    navController.navigate(PerfilRoutes.tickets)
-                                }
-                            }
+                        onLoginClick = {
+                            navController.navigate(AppRoutes.Auth.INICIO_SESION)
                         }
                     )
+                }
+            } catch(e: ResourceNotFoundException) {
+                composable (AppRoutes.Error.ERROR) {
+                    ErrorMesage(
+                        message = e.message?:"Error del sistema. Por favor, inténtelo de nuevo más tarde.",
+                        onBackClick = {
+                            navController.popBackStack()
+                        })
                 }
             }
 
             // DETALLE LOCAL
-            composable("local/{localId}") { entry ->
-
-                val id = entry.arguments
-                    ?.getString("localId")
-                    ?.toIntOrNull()
-
-                val local = id?.let {
-                    sucursalRepository.getById(it)
-                }
-
-                local?.let {
+            try {
+                composable("local/{localID}") { entry ->
+                    val id = entry.arguments
+                        ?.getString("localID")
+                        ?.toLongOrNull()
                     LocalScreen(
-                        local = it,
-                        promociones = promocionRepository.getPromociones(),
-                        favoritos = favoritos,
-                        onToggleFavorito = ::toggleFavorito,
-                        onVolver = {
+                        id = requireNotNull(id),
+                        localViewModel = localViewModel,
+                        onPromocionClick = { id ->
+                            navController.navigate("${AppRoutes.Content.PROMOCION}/$id")
+                        },
+                        onBackClick = {
+                            navController.popBackStack()
+                        }
+                    )
+                }
+            } catch(e: ResourceNotFoundException) {
+                composable(AppRoutes.Error.ERROR) {
+                    ErrorMesage(
+                        message = e.message?:"Error del servidor. Por favor, inténtelo de nuevo más tarde.",
+                        onBackClick = {
                             navController.popBackStack()
                         }
                     )
                 }
             }
+            catch (e: Exception) {
+                composable(AppRoutes.Error.ERROR) {
+                    ErrorMesage(
+                        message = "Error del sistema. Por favor, inténtelo de nuevo más tarde",
+                        onBackClick = {
+                            navController.popBackStack()
+                        }
+                    )
+                }
+            }
+
         }
     }
 }

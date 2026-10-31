@@ -1,128 +1,76 @@
 package com.example.cocinacapital.data.repository
 
-import androidx.compose.runtime.remember
+import com.example.cocinacapital.data.AppContainer
 import com.example.cocinacapital.data.model.CategoriaRestaurante
 import com.example.cocinacapital.data.model.Local
-import com.example.cocinacapital.data.model.Restaurante
 import com.example.cocinacapital.data.model.Ubicacion
 
 class SucursalRepository {
-
-    private val restaurantes = mutableListOf<Restaurante>(
-        Restaurante(
-            1,
-            "La Pica de Juan",
-            "Disfruta de la auténtica gastronomía chilena, con preparaciones tradicionales y sabores caseros.",
-            mutableListOf(CategoriaRestaurante.CHILENA)
-        ),
-        Restaurante(
-            2,
-            "Pizza Napoli",
-            "Restaurante especializado en pizzas de inspiración italiana y preparaciones rápidas.",
-            mutableListOf(CategoriaRestaurante.COMIDA_RAPIDA, CategoriaRestaurante.ITALIANA)
-        ),
-        Restaurante(
-            3,
-            "Sushi House",
-            "Descubre una selección de preparaciones japonesas, sushi y sabores orientales.",
-            mutableListOf(CategoriaRestaurante.JAPONESA)
-        ),
-        Restaurante(
-            4,
-            "Sabores del Perú",
-            "Gastronomía peruana con preparaciones tradicionales, pescados y mariscos.",
-            mutableListOf(CategoriaRestaurante.PERUANA, CategoriaRestaurante.MARISCOS_PESCADOS)
-        ),
-        Restaurante(
-            5,
-            "Café Central",
-            "Un espacio acogedor para disfrutar de café, pastelería y preparaciones dulces.",
-            mutableListOf(CategoriaRestaurante.CAFETERIA_PASTELERIA)
-        ),
-        Restaurante(
-            6,
-            "Green Food",
-            "Alternativas gastronómicas vegetarianas e internacionales para disfrutar de una alimentación variada.",
-            mutableListOf(CategoriaRestaurante.VEGETARIANA, CategoriaRestaurante.INTERNACIONAL)
-        )
-    )
+    val locationRepository = AppContainer.locationRepository
     private val locales = mutableListOf(
 
         Local(
             id = 1,
-            restauranteId = 1,
-            ubicacion = "Viña del Mar, Región de Valparaíso",
-            latitud = -33.0245,
-            longitud = -71.5518
+            nombre = "La Pica de Juan",
+            descripcion =  "Disfruta de la auténtica gastronomía chilena, con preparaciones tradicionales y sabores caseros.",
+            direccion = "Viña del Mar, Región de Valparaíso",
+            ubicacion = locationRepository.agregarUbicacion(),
+            categorias = mutableListOf(CategoriaRestaurante.CHILENA)
         ),
 
         Local(
             id = 2,
-            restauranteId = 2,
-            ubicacion = "Viña del Mar, Región de Valparaíso",
-            latitud = -33.0240,
-            longitud = -71.5525
+            nombre = "Pizza Napoli",
+            descripcion = "Restaurante especializado en pizzas de inspiración italiana y preparaciones rápidas.",
+            direccion = "Viña del Mar, Región de Valparaíso",
+            ubicacion = locationRepository.agregarUbicacion(-43.0, 69.8),
+            categorias = mutableListOf(CategoriaRestaurante.COMIDA_RAPIDA, CategoriaRestaurante.ITALIANA)
         ),
 
         Local(
             id = 3,
-            restauranteId = 3,
-            ubicacion = "Viña del Mar, Región de Valparaíso",
-            latitud = -33.0260,
-            longitud = -71.5530
+            nombre = "Sushi House",
+            descripcion = "Descubre una selección de preparaciones japonesas, sushi y sabores orientales.",
+            direccion = "Viña del Mar, Región de Valparaíso",
+            ubicacion = locationRepository.agregarUbicacion(),
+            categorias = mutableListOf(CategoriaRestaurante.JAPONESA)
         ),
 
         Local(
             id = 4,
-            restauranteId = 4,
-            ubicacion = "Viña del Mar, Región de Valparaíso",
-            latitud = -33.0250,
-            longitud = -71.5500
+            nombre = "Sabores del Perú",
+            descripcion = "Gastronomía peruana con preparaciones tradicionales, pescados y mariscos.",
+            direccion = "Viña del Mar, Región de Valparaíso",
+            ubicacion = locationRepository.agregarUbicacion(),
+            categorias = mutableListOf(CategoriaRestaurante.PERUANA, CategoriaRestaurante.MARISCOS_PESCADOS)
         ),
 
         Local(
             id = 5,
-            restauranteId = 5,
-            ubicacion = "Viña del Mar, Región de Valparaíso",
-            latitud = -33.0270,
-            longitud = -71.5540
+            nombre = "Café Central",
+            descripcion = "Un espacio acogedor para disfrutar de café, pastelería y preparaciones dulces.",
+            direccion = "Viña del Mar, Región de Valparaíso",
+            ubicacion = locationRepository.agregarUbicacion(),
+            categorias = mutableListOf(CategoriaRestaurante.CAFETERIA_PASTELERIA)
         ),
 
         Local(
             id = 6,
-            restauranteId = 6,
-            ubicacion = "Viña del Mar, Región de Valparaíso",
-            latitud = -33.0280,
-            longitud = -71.5520
+            nombre = "Green Food",
+            descripcion = "Alternativas gastronómicas vegetarianas e internacionales para disfrutar de una alimentación variada.",
+            direccion = "Viña del Mar, Región de Valparaíso",
+            ubicacion = locationRepository.agregarUbicacion(),
+            categorias = mutableListOf(CategoriaRestaurante.VEGETARIANA, CategoriaRestaurante.INTERNACIONAL)
         )
     )
-
     // Obtener todos los locales
     fun getAllLocales(): List<Local> {
         return locales.toList()
     }
 
     // Buscar un local por su ID
-    fun getById(id: Int): Local? {
+    fun getLocalPorID(id: Long): Local? {
         return locales.find { it.id == id }
-    }
-
-    // Buscar locales por nombre
-    fun searchByName(nombre: String): List<Local> {
-        return locales.filter {
-            val nombreRestaurante = getRestauranteById(it.restauranteId)?.nombre?:""
-            nombreRestaurante.contains(nombre, ignoreCase = true)
-        }
-    }
-
-    // Buscar locales por categoria
-    fun getByCategoria(categoria: CategoriaRestaurante): List<Local> {
-        return locales.filter {
-            val categorias = getRestauranteById(it.id)?.categorias?:emptyList()
-            categorias.any { categoria ->
-                categoria.equals(categoria)
-            }
-        }
     }
 
     // Registrar un nuevo local
@@ -148,7 +96,7 @@ class SucursalRepository {
     }
 
     // Eliminar un local por ID
-    fun delete(id: Int): Boolean {
+    fun delete(id: Long): Boolean {
         return locales.removeAll {
             it.id == id
         }

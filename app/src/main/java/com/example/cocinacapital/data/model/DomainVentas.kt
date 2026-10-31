@@ -1,6 +1,7 @@
 package com.example.cocinacapital.data.model
 
 import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.todayIn
 import kotlin.time.Clock
@@ -25,12 +26,13 @@ data class Promocion(
     val descripcion: String,
     val descuento: Int,
     val imagen: Int,
-    val fecha_inicio: LocalDate,
-    val fecha_termino: LocalDate
+    val fecha_inicio: LocalDateTime,
+    val fecha_termino: LocalDateTime
 )
 
 @OptIn(ExperimentalTime::class)
 data class Tarjeta(
+    val userID: Long,
     val nroTarjeta: Long,
     val fechaVencimiento: LocalDate,
     val prioritaria: Boolean

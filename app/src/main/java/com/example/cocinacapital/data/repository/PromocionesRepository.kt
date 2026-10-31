@@ -7,6 +7,7 @@ import com.example.cocinacapital.data.model.Parametro
 import com.example.cocinacapital.data.model.Producto
 import com.example.cocinacapital.data.model.Promocion
 import com.example.cocinacapital.data.model.User
+import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import kotlin.time.Clock
@@ -22,7 +23,7 @@ class PromocionesRepository {
     @OptIn(ExperimentalTime::class)
     private val momentoActual = Clock.System.now()
     @OptIn(ExperimentalTime::class)
-    private val fechaActual = momentoActual.toLocalDateTime(TimeZone.currentSystemDefault()).date
+    private val fechaActual = momentoActual.toLocalDateTime(TimeZone.currentSystemDefault())
 
     // Productos que aplica la promoción
     private val promociones = listOf(
@@ -30,7 +31,7 @@ class PromocionesRepository {
         // LA PICA DE JUAN
         Promocion(
             id = 1,
-            local = requireNotNull(sucursalRepository.getById(1)),
+            local = requireNotNull(sucursalRepository.getLocalPorID(1)),
             productos = mutableListOf(
                 productos[0],
                 productos[1]
@@ -38,15 +39,15 @@ class PromocionesRepository {
             titulo = "Sabores Chilenos",
             descripcion = "Disfruta de una leche asada y papas rústicas con un descuento especial.",
             descuento = 20,
-            distancia = 0.5,
-            imagen = R.drawable.promo1,
-            activa = true
+            fecha_inicio = LocalDateTime(2026, 10, 31, 12, 0, 0, 0),
+            fecha_termino = LocalDateTime(2026, 11, 9, 18, 0, 0, 0),
+            imagen = R.drawable.promo1
         ),
 
         // PIZZA NAPOLI
         Promocion(
             id = 2,
-            local = requireNotNull(sucursalRepository.getById(2)),
+            local = requireNotNull(sucursalRepository.getLocalPorID(2)),
             productos = mutableListOf(
                 productos[2],
                 productos[3]
@@ -54,15 +55,15 @@ class PromocionesRepository {
             titulo = "Momento Italiano",
             descripcion = "Acompaña tu experiencia italiana con un delicioso tiramisú y papas fritas.",
             descuento = 15,
-            distancia = 0.8,
-            imagen = R.drawable.promo2,
-            activa = true
+            fecha_inicio = LocalDateTime(2026, 10, 31, 12, 0, 0, 0),
+            fecha_termino = LocalDateTime(2026, 11, 9, 18, 0, 0, 0),
+            imagen = R.drawable.promo2
         ),
 
         // SUSHI HOUSE
         Promocion(
             id = 3,
-            local = requireNotNull(sucursalRepository.getById(3)),
+            local = requireNotNull(sucursalRepository.getLocalPorID(3)),
             productos = mutableListOf(
                 productos[4],
                 productos[5]
@@ -70,15 +71,15 @@ class PromocionesRepository {
             titulo = "Experiencia Japonesa",
             descripcion = "Disfruta de mochis y papas tempura en una combinación especial.",
             descuento = 25,
-            distancia = 1.2,
-            imagen = R.drawable.promo3,
-            activa = true
+            fecha_inicio = LocalDateTime(2026, 10, 31, 12, 0, 0, 0),
+            fecha_termino = LocalDateTime(2026, 11, 9, 18, 0, 0, 0),
+            imagen = R.drawable.promo3
         ),
 
         // SABORES DEL PERÚ
         Promocion(
             id = 4,
-            local = requireNotNull(sucursalRepository.getById(4)),
+            local = requireNotNull(sucursalRepository.getLocalPorID(4)),
             productos = mutableListOf(
                 productos[6],
                 productos[7]
@@ -86,15 +87,15 @@ class PromocionesRepository {
             titulo = "Tradición Peruana",
             descripcion = "Prueba el tradicional suspiro limeño junto a unas deliciosas papas a la huancaína.",
             descuento = 20,
-            distancia = 1.5,
-            imagen = R.drawable.promo4,
-            activa = true
+            fecha_inicio = LocalDateTime(2026, 10, 31, 12, 0, 0, 0),
+            fecha_termino = LocalDateTime(2026, 11, 9, 18, 0, 0, 0),
+            imagen = R.drawable.promo4
         ),
 
         // CAFÉ CENTRAL
         Promocion(
             id = 5,
-            local = requireNotNull(sucursalRepository.getById(5)),
+            local = requireNotNull(sucursalRepository.getLocalPorID(5)),
             productos = mutableListOf(
                 productos[8],
                 productos[9]
@@ -102,14 +103,15 @@ class PromocionesRepository {
             titulo = "Dulce Tentación",
             descripcion = "Combina un cheesecake de frutilla con un brownie de chocolate.",
             descuento = 30,
-            distancia = 0.7,imagen = R.drawable.promo5,
-            activa = true
+            fecha_inicio = LocalDateTime(2026, 10, 31, 12, 0, 0, 0),
+            fecha_termino = LocalDateTime(2026, 11, 9, 18, 0, 0, 0),
+            imagen = R.drawable.promo5
         ),
 
         // GREEN FOOD
         Promocion(
             id = 6,
-            local = requireNotNull(sucursalRepository.getById(6)),
+            local = requireNotNull(sucursalRepository.getLocalPorID(6)),
             productos = mutableListOf(
                 productos[10],
                 productos[11]
@@ -117,12 +119,16 @@ class PromocionesRepository {
             titulo = "Green Experience",
             descripcion = "Disfruta de una alternativa fresca y natural con productos seleccionados.",
             descuento = 15,
-            distancia = 1.0,
-            imagen = R.drawable.promo6,
-            activa = true
+            fecha_inicio = LocalDateTime(2026, 10, 31, 12, 0, 0, 0),
+            fecha_termino = LocalDateTime(2026, 11, 9, 18, 0, 0, 0),
+            imagen = R.drawable.promo6
         )
     )
     fun getAllPromociones(): List<Promocion> = promociones
+
+    fun obtenerPromocionPorID(id: Long): Promocion? = promociones.firstOrNull {
+        it.id == id
+    }
 
     fun obtenerPromocionesActivas(): List<Promocion> = promociones.filter { it.fecha_termino >= fechaActual }
 
@@ -186,12 +192,8 @@ class PromocionesRepository {
         }
     }
 
-    fun obtenerPromocionesPorProductoID(id: Long): List<Promocion> {
-        return obtenerPromocionesActivas().filter { promocion ->
-            promocion.productos.any { producto ->
-                producto.id == id
-            }
-        }
+    fun obtenerPromocionesActivasLocal(id: Long): List<Promocion> {
+        return promociones.filter { it.local.id == id }
     }
 
     fun obtenerProductosPromocionesActivas(

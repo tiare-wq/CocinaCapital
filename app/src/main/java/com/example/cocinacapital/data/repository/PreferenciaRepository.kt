@@ -31,7 +31,7 @@ class PreferenciaRepository {
         )
     }
 
-    private val preguntas = listOf<Pregunta>(
+    private val preguntas = listOf(
         Pregunta(
             1,
             "¿Qué comida te gusta?",

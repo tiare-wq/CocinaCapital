@@ -58,4 +58,8 @@ object AppRoutes {
         const val LOCAL = "local"
         const val PRODUCTO = "producto"
     }
+
+    object Error {
+        const val ERROR = "error"
+    }
 }

@@ -45,6 +45,7 @@ import com.example.cocinacapital.data.model.Promocion
 import com.example.cocinacapital.data.model.Ubicacion
 import com.example.cocinacapital.ui.theme.AppColors
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import kotlinx.datetime.todayIn
 import java.util.Locale
 import kotlin.time.Clock
@@ -243,9 +244,9 @@ fun PromocionCardPublic(
     onFavoritoClick: () -> Unit,
     calcularDistancia: (Ubicacion, Ubicacion) -> Double
 ) {
-    val zonaHoraria = TimeZone.currentSystemDefault()
-    val hoy = Clock.System.todayIn(zonaHoraria)
-    val estado = promocion.fecha_termino >= hoy
+    val momentoActual = Clock.System.now()
+    val fechaActual = momentoActual.toLocalDateTime(TimeZone.currentSystemDefault())
+    val estado = promocion.fecha_termino >= fechaActual
 
     AppCard(
         modifier = Modifier
@@ -382,9 +383,9 @@ fun PromocionCardPrivate(
     onFavoritoClick: () -> Unit,
     calcularDistancia: (Ubicacion, Ubicacion) -> Double
 ) {
-    val zonaHoraria = TimeZone.currentSystemDefault()
-    val hoy = Clock.System.todayIn(zonaHoraria)
-    val estado = promocion.fecha_termino >= hoy
+    val momentoActual = Clock.System.now()
+    val fechaActual = momentoActual.toLocalDateTime(TimeZone.currentSystemDefault())
+    val estado = promocion.fecha_termino >= fechaActual
 
     AppCard(
         modifier = Modifier

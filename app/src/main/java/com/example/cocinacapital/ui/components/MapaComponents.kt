@@ -169,7 +169,7 @@ fun MensajeVacio(
 @Composable
 fun OpenStreetMapView(
     locales: List<Local>,
-    onLocalClick: (Local) -> Unit = {}
+    onLocalClick: (Long) -> Unit
 ) {
 
     AndroidView(
@@ -222,7 +222,7 @@ fun OpenStreetMapView(
                                 }
 
                             if (localSeleccionado != null) {
-                                onLocalClick(localSeleccionado)
+                                onLocalClick(localSeleccionado.id)
                             }
 
                             true

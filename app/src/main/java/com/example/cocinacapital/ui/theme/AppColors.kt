@@ -41,4 +41,9 @@ object AppColors {
     val FondoFavoritos = Color(0xFFF8FBFE)
     val TextoFavoritos = Color(0xFF1D3850)
     val TextoSecundarioFavoritos = Color(0xFF71869A)
+
+    val AzulCapital = Color(0xFF1762B8)
+    val FondoCapital = Color(0xFFF8FBFE)
+    val TextoCapital = Color(0xFF1D3850)
+    val TextoSecundario = Color(0xFF71869A)
 }
