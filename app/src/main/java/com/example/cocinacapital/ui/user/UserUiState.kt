@@ -1,5 +1,6 @@
 package com.example.cocinacapital.ui.user
 
+import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.ViewModel
 import com.example.cocinacapital.data.AppContainer
 import com.example.cocinacapital.data.model.Preferencia
@@ -14,7 +15,7 @@ import kotlin.time.ExperimentalTime
 
 data class UserUiState(
     val user: User? = null,
-    val tarjetas: List<Tarjeta> = emptyList(),
+    val tarjetas: MutableList<Tarjeta> = mutableListOf(),
     val preferencias: List<Preferencia> = emptyList()
 ) {
     val estado: EstadoUsuario
@@ -32,10 +33,6 @@ class UserViewModel: ViewModel() {
     val userUiState: StateFlow<UserUiState> = _uiState.asStateFlow()
     val authRepository = AppContainer.authRepository
     val preferenciasRepository = AppContainer.preferenciaRepository
-    @OptIn(ExperimentalTime::class)
-    val tarjetaRepository = AppContainer.tarjetaRepository
-    val user = MutableStateFlow<User?>(null)
-
     val preguntas = preferenciasRepository.obtenerPreguntas()
 
     //Establecer usuario
@@ -45,7 +42,7 @@ class UserViewModel: ViewModel() {
         _uiState.update {
             it.copy(
                 user = nuevoUser,
-                tarjetas = nuevoUser?.tarjetas?.toList()?:emptyList(),
+                tarjetas = nuevoUser?.tarjetas?:mutableListOf(),
                 preferencias = nuevoUser?.preferencias?.toList()?:emptyList()
             )
         }
@@ -57,7 +54,7 @@ class UserViewModel: ViewModel() {
         _uiState.update {
             it.copy(
                 user = user,
-                tarjetas = user.tarjetas.toList(),
+                tarjetas = user.tarjetas,
                 preferencias = user.preferencias.toList()
             )
         }
@@ -80,7 +77,7 @@ class UserViewModel: ViewModel() {
         _uiState.update {
             it.copy(
                 user = null,
-                tarjetas = emptyList(),
+                tarjetas = mutableListOf(),
                 preferencias = emptyList()
             )
         }

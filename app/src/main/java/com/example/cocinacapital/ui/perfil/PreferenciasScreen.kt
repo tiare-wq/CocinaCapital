@@ -20,7 +20,8 @@ import com.example.cocinacapital.ui.components.CocinaLayout
 fun PreferenciasScreen(
     user: User,
     preguntas: List<Pregunta>,
-    onUpdateClick: (User) -> Unit
+    onUpdateClick: (User) -> Unit,
+    onBackStack: () -> Unit
 ) {
     var indiceActual by remember { mutableIntStateOf(0) }
 
@@ -208,8 +209,8 @@ fun PreferenciasScreen(
                             val usuarioActualizado = user.copy(
                                 preferencias = nuevasPreferencias
                             )
-
                             onUpdateClick(usuarioActualizado)
+                            onBackStack()
                         }
                     ) {
                         Text("Guardar cambios")

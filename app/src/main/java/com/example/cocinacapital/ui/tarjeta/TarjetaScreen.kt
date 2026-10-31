@@ -1,8 +1,6 @@
-package com.example.cocinacapital.ui.perfil
+package com.example.cocinacapital.ui.tarjeta
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -15,18 +13,16 @@ import com.example.cocinacapital.data.repository.TarjetaRepository
 import com.example.cocinacapital.ui.components.CocinaLayout
 import com.example.cocinacapital.ui.components.TarjetaBlanca
 import kotlinx.datetime.LocalDate
+import kotlin.time.ExperimentalTime
 
-@kotlin.time.ExperimentalTime
+@ExperimentalTime
 @Composable
-fun EditarTarjetaScreen(
+fun TarjetaScreen(
     user: User,
-    repository: TarjetaRepository
+    onAgregarTarjeta: (Tarjeta) -> Boolean,
+    onEliminarTarjeta: (Long, Long) -> Boolean,
+    tarjetas: MutableList<Tarjeta>
 ) {
-    // Lista observable por Compose
-    val tarjetas = remember(user.id) {
-        repository.obtenerTarjetasUsuario(user.id).toMutableStateList()
-    }
-
     var mostrarDialogo by remember { mutableStateOf(false) }
     var numeroTarjeta by remember { mutableStateOf("") }
     var fechaVencimiento by remember { mutableStateOf("") }
@@ -61,11 +57,10 @@ fun EditarTarjetaScreen(
 
                 OutlinedButton(
                     onClick = {
-                        val eliminada = repository.eliminarTarjeta(
+                        val eliminada = onEliminarTarjeta(
                             tarjetaPrioritaria.nroTarjeta,
                             user.id
                         )
-
                         if (eliminada) {
                             tarjetas.remove(tarjetaPrioritaria)
                         }
@@ -96,7 +91,7 @@ fun EditarTarjetaScreen(
 
                     OutlinedButton(
                         onClick = {
-                            val eliminada = repository.eliminarTarjeta(
+                            val eliminada = onEliminarTarjeta(
                                 tarjeta.nroTarjeta,
                                 user.id
                             )
@@ -201,12 +196,11 @@ fun EditarTarjetaScreen(
                             else -> {
                                 val nuevaTarjeta = Tarjeta(
                                     numero,
-                                    user,
                                     fecha,
                                     false
                                 )
 
-                                val agregada = repository.agregarTarjeta(nuevaTarjeta)
+                                val agregada = onAgregarTarjeta(nuevaTarjeta)
 
                                 if (agregada) {
                                     tarjetas.add(nuevaTarjeta)

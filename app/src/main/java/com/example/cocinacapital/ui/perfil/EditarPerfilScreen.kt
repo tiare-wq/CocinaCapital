@@ -29,14 +29,13 @@ import com.example.cocinacapital.ui.auth.validarPassword
 @Composable
 fun EditarPerfilScreen(
     onUpdateClick: (User) -> Unit,
+    onBackStack: () -> Unit,
     user: User
 ) {
     var email by rememberSaveable(user.id) { mutableStateOf(user.email) }
     var password by rememberSaveable(user.id) { mutableStateOf(user.password) }
     var name by rememberSaveable(user.id) { mutableStateOf((user.name)) }
     var errorMessage by rememberSaveable { mutableStateOf("") }
-
-    val authRepository = remember { AppContainer.authRepository }
 
     val requisitosPassword =
         "Usa al menos 8 caracteres, una mayúscula, " +
@@ -124,9 +123,9 @@ fun EditarPerfilScreen(
                         validarMail(email) &&
                         validarPassword(password),
             onClick = {
-                val usuario = User(user.id, email, name, password, user.foto, user.preferencias, user.latitud, user.longitud)
-                authRepository.updateUser(usuario)
+                val usuario = user.copy(email = email, password = password, name = name)
                 onUpdateClick(usuario)
+                onBackStack()
             }
         )
     }

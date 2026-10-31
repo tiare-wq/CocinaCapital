@@ -20,7 +20,7 @@ class TarjetaRepository() {
         "No se encontró el usuario inicial"
     }
 
-    private val tarjetas = mutableMapOf<Int, MutableList<Tarjeta>>(
+    private val tarjetas = mutableMapOf<Long, MutableList<Tarjeta>>(
         usuario1.id to mutableListOf(
             Tarjeta(1998282718811234L, usuario1, fecha, true),
             Tarjeta(1234123412341234L, usuario1, fecha, false)
@@ -44,7 +44,7 @@ class TarjetaRepository() {
     }
 
     // ELIMINAR TARJETA
-    fun eliminarTarjeta(numero: Long, id: Int): Boolean {
+    fun eliminarTarjeta(numero: Long, id: Long): Boolean {
         val lista = tarjetas[id] ?: return false
 
         return lista.removeAll {

@@ -33,8 +33,12 @@ import com.example.cocinacapital.ui.mapa.MapaRoute
 import com.example.cocinacapital.ui.perfil.*
 import com.example.cocinacapital.ui.preferencias.PreferenciasScreen
 import com.example.cocinacapital.ui.ventas.PromocionScreen
-import com.example.cocinacapital.ui.screen.*
+import com.example.cocinacapital.ui.tarjeta.TarjetaScreen
+import com.example.cocinacapital.ui.tarjeta.TarjetaViewModel
 import com.example.cocinacapital.ui.theme.AppColors
+import com.example.cocinacapital.ui.tickets.MisTicketsScreen
+import com.example.cocinacapital.ui.tickets.TicketViewModel
+import com.example.cocinacapital.ui.tickets.TicketViewModelFactory
 import com.example.cocinacapital.ui.ubicacion.LocationScreen
 import com.example.cocinacapital.ui.ubicacion.UbicacionViewModel
 import com.example.cocinacapital.ui.ubicacion.UbicacionViewModelFactory
@@ -55,21 +59,29 @@ fun AppNavigation() {
     val userUiState by userViewModel.userUiState.collectAsStateWithLifecycle()
     val estado = userUiState.estado
 
+    // Estado de sesión
+    var user by remember { mutableStateOf<User?>(userUiState.user) }
+
     // Ubicación
     val context = LocalContext.current
     val ubicacionViewModel: UbicacionViewModel = viewModel(
         factory = UbicacionViewModelFactory(context)
     )
-    val ubicacion = ubicacionViewModel.ubicacion
+    val ubicacion = ubicacionViewModel.ubicacion.collectAsStateWithLifecycle()
+
+    // Tickets
+    val ticketViewModel: TicketViewModel = viewModel(
+        factory = TicketViewModelFactory(user)
+    )
+    val ticketUiState by ticketViewModel.ticketUiState.collectAsStateWithLifecycle()
+
+    // Tarjetas
+    val tarjetasViewModel: TarjetaViewModel = viewModel()
 
     // Repositorios
     val sucursalRepository = remember { SucursalRepository() }
     val promocionRepository = remember { PromocionesRepository() }
     val ticketsRepository = remember { TicketsRepository() }
-    val tarjetaRepository = remember { TarjetaRepository() }
-
-    // Estado de sesión
-    var user by remember { mutableStateOf<User?>(userUiState.user) }
 
     // Navegación inferior
     val bottomItems = listOf(
@@ -259,10 +271,64 @@ fun AppNavigation() {
                     }
                 )
             }
+            // PERFIL
+            composable(AppRoutes.Main.PERFIL.ruta) {
+                PerfilRoute(
+                    user = user,
+                    estado = estado,
+                    onLoginClick = {
+                        navController.navigate(AppRoutes.Auth.INICIO_SESION)
+                    },
+                    onCerrarSesion = userViewModel::cerrarSesion,
+                    navController = navController,
+                )
+            }
+
+            // TICKETS
+            composable(AppRoutes.Profile.TICKET) {
+                MisTicketsScreen(
+                    tickets = ticketUiState.tickets,
+                    onVolver = {
+                        navController.popBackStack()
+                    }
+                )
+            }
+
+            // EDITAR PERFIL
+            composable(AppRoutes.Profile.EDITAR_PERFIL) {
+                EditarPerfilScreen(
+                    onUpdateClick = userViewModel::actualizarUsuario,
+                    onBackStack = {
+                        navController.popBackStack()
+                    },
+                    user = requireNotNull(user)
+                )
+            }
+
+            // TARJETA
+            composable(AppRoutes.Profile.TARJETA) {
+                TarjetaScreen(
+                    user = requireNotNull(user),
+                    tarjetas = userUiState.tarjetas,
+                    onAgregarTarjeta = tarjetasViewModel::agregarTarjeta,
+                    onEliminarTarjeta = tarjetasViewModel::eliminarTarjeta
+                    )
+            }
+
+            // EDITAR PREFERENCIAS
+            composable(AppRoutes.Profile.EDITAR_PREFERENCIAS) {
+                PreferenciasScreen(
+                    user = requireNotNull(user),
+                    preguntas = userViewModel.preguntas,
+                    onUpdateClick = userViewModel::actualizarUsuario,
+                    onBackStack = {
+                        navController.popBackStack()
+                    }
+                )
+            }
 
             // PROMOCIONES
-            composable("promocion/{promocionId}") { entry ->
-
+            composable(AppRoutes.Content.PROMOCION) { entry ->
                 val id = entry.arguments
                     ?.getString("promocionId")
                     ?.toIntOrNull()
@@ -314,71 +380,6 @@ fun AppNavigation() {
                         favoritos = favoritos,
                         onToggleFavorito = ::toggleFavorito,
                         onVolver = {
-                            navController.popBackStack()
-                        }
-                    )
-                }
-            }
-
-            // PERFIL
-            composable(Routes.PERFIL.ruta) {
-                PerfilScreen(
-                    onCerrarSesion = ::cerrarSesion,
-                    navController = navController,
-                    user = user
-                )
-            }
-
-            composable(PerfilRoutes.tickets) {
-                MisTicketsScreen(
-                    tickets = ticketsRepository.obtenerTickets(
-                        usuarioId = user?.id ?: 0
-                    ),
-                    onVolver = {
-                        navController.popBackStack()
-                    }
-                )
-            }
-
-            composable(PerfilRoutes.editarPerfil) {
-                EditarPerfilScreen(
-                    onUpdateClick = { usuario ->
-                        updateUser(usuario)
-                        navController.popBackStack()
-                    },
-                    user = user ?: User(
-                        0, "", "", "", 0,
-                        mutableListOf<Preferencia>(),
-                        null
-                    )
-                )
-            }
-
-            composable(PerfilRoutes.editarTarjeta) {
-                user?.let { usuario ->
-                    EditarTarjetaScreen(
-                        user = usuario,
-                        repository = tarjetaRepository
-                    )
-                }
-            }
-
-            composable(PerfilRoutes.historial) {
-                HistorialScreen()
-            }
-
-            composable(PerfilRoutes.editarPreferencias) {
-                user?.let { usuario ->
-                    PreferenciasScreen(
-                        user = usuario,
-                        preguntas = AppContainer.preferenciaRepository
-                            .obtenerPreguntas(),
-
-                        onUpdateClick = { actualizado ->
-                            AppContainer.authRepository
-                                .updateUser(actualizado)
-
-                            updateUser(actualizado)
                             navController.popBackStack()
                         }
                     )
