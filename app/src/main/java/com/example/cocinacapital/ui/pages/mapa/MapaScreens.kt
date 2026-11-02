@@ -4,7 +4,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.material.icons.outlined.MyLocation
@@ -166,6 +168,7 @@ fun MapaScreenNull(
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .verticalScroll(rememberScrollState())
             .background(AppColors.FondoMapa)
             .padding(horizontal = 22.dp, vertical = 24.dp)
     ) {
@@ -183,7 +186,7 @@ fun MapaScreenNull(
         Text(
             text = "Descubre restaurantes cerca de ti.",
             fontSize = 14.sp,
-            color = AppColors.GrisMapa
+            color = Color.White
         )
 
         Spacer(Modifier.height(16.dp))

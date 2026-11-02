@@ -19,7 +19,7 @@ fun LocationScreen(
     onInicioClick: () -> Unit
 ) {
     // Solicitar permisos y obtener ubicación
-    SolicitarPermisos(ubicacionViewModel)
+    SolicitarPermisos(ubicacionViewModel, true)
 
     // Observar la ubicación del ViewModel
     val ubicacion by ubicacionViewModel.ubicacion.collectAsState()

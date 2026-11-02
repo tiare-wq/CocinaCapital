@@ -3,10 +3,8 @@ package com.example.cocinacapital.data.repository
 import com.example.cocinacapital.R
 import com.example.cocinacapital.data.model.CategoriaRestaurante
 import com.example.cocinacapital.data.model.Preferencia
-import com.example.cocinacapital.data.model.Tarjeta
 import com.example.cocinacapital.data.model.TipoPreferencia
 import com.example.cocinacapital.data.model.User
-import kotlinx.datetime.LocalDate
 
 class AuthRepository {
 

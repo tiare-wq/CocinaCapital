@@ -1,6 +1,7 @@
 package com.example.cocinacapital.ui.pages.ubicacion
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -21,7 +22,7 @@ class UbicacionViewModel(
 ): ViewModel() {
     private val _ubicacion = MutableStateFlow<Ubicacion?>(null)
     val ubicacion: StateFlow<Ubicacion?> = _ubicacion.asStateFlow()
-    fun obtenenerUbicacion() {
+    fun obtenerUbicacion() {
         repository.obtenerUbicacionActual { ubicacion ->
             _ubicacion.value = ubicacion
         }
@@ -29,63 +30,49 @@ class UbicacionViewModel(
 }
 
 @Composable
+@SuppressLint("MissingPermissions")
 fun SolicitarPermisos(
-    ubicacionViewModel: UbicacionViewModel
-): () -> Unit {
+    ubicacionViewModel: UbicacionViewModel,
+    solicitar: Boolean
+) {
     val context = LocalContext.current
 
-    val permisosUbicacion = rememberLauncherForActivityResult(
+    val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestMultiplePermissions()
-    ) { permiso ->
+    ) { permisos ->
 
         val concedido =
-            permiso[Manifest.permission.ACCESS_FINE_LOCATION] == true ||
-                    permiso[Manifest.permission.ACCESS_COARSE_LOCATION] == true
+            permisos[Manifest.permission.ACCESS_FINE_LOCATION] == true ||
+                    permisos[Manifest.permission.ACCESS_COARSE_LOCATION] == true
 
         if (concedido) {
-            ubicacionViewModel.obtenenerUbicacion()
+            ubicacionViewModel.obtenerUbicacion()
         }
     }
 
-    // 1. Comprobar automáticamente al entrar en composición
-    LaunchedEffect(Unit) {
+    LaunchedEffect(solicitar) {
+        if (solicitar) {
 
-        val tienePermiso =
-            ContextCompat.checkSelfPermission(
-                context,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED ||
-                    ContextCompat.checkSelfPermission(
-                        context,
+            val tienePermiso =
+                ContextCompat.checkSelfPermission(
+                    context,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) == PackageManager.PERMISSION_GRANTED ||
+                        ContextCompat.checkSelfPermission(
+                            context,
+                            Manifest.permission.ACCESS_COARSE_LOCATION
+                        ) == PackageManager.PERMISSION_GRANTED
+
+            if (tienePermiso) {
+                ubicacionViewModel.obtenerUbicacion()
+            } else {
+                launcher.launch(
+                    arrayOf(
+                        Manifest.permission.ACCESS_FINE_LOCATION,
                         Manifest.permission.ACCESS_COARSE_LOCATION
-                    ) == PackageManager.PERMISSION_GRANTED
-
-        if (tienePermiso) {
-            ubicacionViewModel.obtenenerUbicacion()
-        }
-    }
-
-    // 2. Devolver una función para el botón
-    return {
-        val tienePermiso =
-            ContextCompat.checkSelfPermission(
-                context,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED ||
-                    ContextCompat.checkSelfPermission(
-                        context,
-                        Manifest.permission.ACCESS_COARSE_LOCATION
-                    ) == PackageManager.PERMISSION_GRANTED
-
-        if (tienePermiso) {
-            ubicacionViewModel.obtenenerUbicacion()
-        } else {
-            permisosUbicacion.launch(
-                arrayOf(
-                    Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.ACCESS_COARSE_LOCATION
+                    )
                 )
-            )
+            }
         }
     }
 }
