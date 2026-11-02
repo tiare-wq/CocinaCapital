@@ -17,7 +17,7 @@ class UbicacionRepository(context: Context) {
         val cancellationTokenSource = CancellationTokenSource()
 
         fusedLocationService.getCurrentLocation(
-            Priority.PRIORITY_BALANCED_POWER_ACCURACY,
+            Priority.PRIORITY_HIGH_ACCURACY,
             cancellationTokenSource.token
         ).addOnSuccessListener { location ->
             val ubicacion = location?.let {

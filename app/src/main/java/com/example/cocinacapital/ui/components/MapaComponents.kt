@@ -241,7 +241,7 @@ fun OpenStreetMapView(
                                         primerLocal.ubicacion.longitud
                                     )
                                 } else {
-                                    LatLng(-33.4489, -70.6693)
+                                    LatLng(-33.02457, -71.55183)
                                 }
                             )
                             .zoom(12.0)

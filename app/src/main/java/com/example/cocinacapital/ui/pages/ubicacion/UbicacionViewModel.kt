@@ -30,7 +30,6 @@ class UbicacionViewModel(
 }
 
 @Composable
-@SuppressLint("MissingPermissions")
 fun SolicitarPermisos(
     ubicacionViewModel: UbicacionViewModel,
     solicitar: Boolean

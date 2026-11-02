@@ -63,7 +63,7 @@ fun MapasScreenUbicacion(
         Spacer(Modifier.height(16.dp))
 
         OpenStreetMapView(
-            locales = locales,
+            locales = localesInRadio,
             onLocalClick = onLocalClick
         )
 
