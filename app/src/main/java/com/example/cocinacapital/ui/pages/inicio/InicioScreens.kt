@@ -248,7 +248,7 @@ fun InicioScreenPrivado(
             ) {
                 LocalCard(
                     local = local,
-                    onClick = {onLocalClick(local.id)})
+                    onClick = { onLocalClick(local.id) })
             }
         }
     }

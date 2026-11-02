@@ -341,6 +341,7 @@ fun AppNavigation() {
                         user = user,
                         ubicacion = ubicacion.value,
                         estado = estado,
+                        onCanjearPromocion = ticketViewModel::canjearPromocion,
                         onTicketClick = {
                             navController.navigate(AppRoutes.Profile.TICKET)
                         },

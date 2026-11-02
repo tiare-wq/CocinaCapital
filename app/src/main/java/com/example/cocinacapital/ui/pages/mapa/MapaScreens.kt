@@ -36,7 +36,7 @@ fun MapasScreenUbicacion(
     calcularDistancia: (Ubicacion, Ubicacion) -> Double
 
 ) {
-    val localesInRadio = obtenerLocalesCercanos(ubicacion, 15.0)
+    val localesInRadio = obtenerLocalesCercanos(ubicacion, 100.0)
 
     Column(
         modifier = Modifier

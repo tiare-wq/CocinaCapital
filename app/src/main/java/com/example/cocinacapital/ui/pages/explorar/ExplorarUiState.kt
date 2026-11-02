@@ -14,10 +14,8 @@ import kotlinx.coroutines.flow.update
 data class ExplorarUiState(
     val busqueda: String = "",
     val categoria: CategoriaRestaurante = CategoriaRestaurante.TODAS,
-
     val promociones: List<Promocion> = emptyList(),
     val locales: List<Local> = emptyList(),
-
     val isLoading: Boolean = false
 )
 
@@ -38,7 +36,6 @@ class ExplorarViewModel : ViewModel() {
 
         filtrar()
     }
-
     fun actualizarCategoria(categoria: CategoriaRestaurante) {
         _uiState.update {
             it.copy(categoria = categoria)
@@ -46,7 +43,6 @@ class ExplorarViewModel : ViewModel() {
 
         filtrar()
     }
-
     private fun filtrar() {
         val estado = _uiState.value
 

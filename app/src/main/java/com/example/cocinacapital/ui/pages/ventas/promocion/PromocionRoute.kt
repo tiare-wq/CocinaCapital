@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.cocinacapital.data.model.Promocion
 import com.example.cocinacapital.data.model.Ubicacion
 import com.example.cocinacapital.data.model.User
 import com.example.cocinacapital.exceptions.ResourceNotFoundException
@@ -18,15 +19,13 @@ fun PromocionRoute(
     ubicacion: Ubicacion?,
     estado: EstadoUsuario,
     promocionID: Long,
+    onCanjearPromocion: (Long, Promocion) -> Boolean,
     onTicketClick: () -> Unit,
     onBackClick: () -> Unit,
     onLoginClick: () -> Unit
 ) {
     val promocionViewModel: PromocionViewModel = viewModel()
     val promocionUiState by promocionViewModel.promocionUiState.collectAsStateWithLifecycle()
-    val ticketViewModel: TicketViewModel = viewModel(
-        factory = TicketViewModelFactory(user)
-    )
     val promocion = promocionViewModel.obtenerPromocion(promocionID)
     if (promocion == null) {
         throw ResourceNotFoundException("No se encuentra la promoción solicitada.")
@@ -51,7 +50,7 @@ fun PromocionRoute(
                 user = requireNotNull(user),
                 promocion = promocion,
                 distancia = distancia,
-                onCanjear = ticketViewModel::canjearPromocion,
+                onCanjear = onCanjearPromocion,
                 active = active,
                 onTicketClick = onTicketClick,
                 onBackClick = onBackClick

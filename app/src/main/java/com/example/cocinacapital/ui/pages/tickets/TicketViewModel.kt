@@ -21,8 +21,28 @@ class TicketViewModel(var user: User?): ViewModel() {
     val ticketUiState: StateFlow<TicketUiState> = _uiState.asStateFlow()
     val ticketsRepository = AppContainer.ticketRepository
 
+    init {
+        if (user != null) {
+            _uiState.update { it.copy(
+                tickets = ticketsRepository.obtenerTickets(requireNotNull(user).id)
+            )}
+        }
+    }
+
+    fun actualizarTickets(nuevosTickets: List<Promocion>) {
+        _uiState.update {
+            it.copy(
+                tickets = nuevosTickets
+            )
+        }
+    }
+
     fun canjearPromocion(usuarioID: Long, promocion: Promocion): Boolean {
-        return ticketsRepository.canjearPromocion(usuarioID, promocion)
+        val canjeado = ticketsRepository.canjearPromocion(usuarioID, promocion)
+        if (canjeado) {
+            actualizarTickets(_uiState.value.tickets.plus(promocion))
+        }
+        return canjeado
     }
 }
 class TicketViewModelFactory(
